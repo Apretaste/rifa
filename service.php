@@ -29,9 +29,8 @@ class Rifa extends Service
 		$userTickets = $connection->deepQuery("SELECT count(*) as tickets FROM ticket WHERE raffle_id is NULL AND email = '{$request->email}'");
 		$userTickets = $userTickets[0]->tickets;
 
-		// get the path to wwww 
-		$di = \Phalcon\DI\FactoryDefault::getDefault();
-		$wwwroot = $di->get('path')['root'];
+		// link to connect cuba logo
+		$connectCubaLogo = "{$this->pathToService}/images/connectcuba.jpg";
 
 		// create a json object to send to the template
 		$responseContent = array(
@@ -41,13 +40,13 @@ class Rifa extends Service
 			"tickets" => $raffle->tickets,
 			"image" => $raffle->image,
 			"userTickets" => $userTickets,
-			"connectCubaLogo" => "$wwwroot/public/images/connectcuba.jpg"
+			"connectCubaLogo" => $connectCubaLogo
 		);
 
 		// create the final user Response
 		$response = new Response();
 		$response->subject = "La Rifa de Apretaste";
-		$response->createFromTemplate("basic.tpl", $responseContent, array($raffle->image));
+		$response->createFromTemplate("basic.tpl", $responseContent, array($raffle->image, $connectCubaLogo));
 		return $response;
 	}
 
