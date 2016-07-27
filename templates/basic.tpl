@@ -47,6 +47,22 @@
 
 {space30}
 
+<table width="100%" align="center" border="0">
+	<tr>
+		<td>{img src="{$connectCubaLogo}" alt="Connect Cuba" width="100px"}</td>
+		<td style="padding-left:10px;" valign="top">
+			<p>Esta Rifa est&aacute; patrocinada por <font color="#094E9D">Connecta Cuba</font>, una organizaci&oacute;n sin &aacute;nimos de lucro creada para expandir el alcance de internet libre de censura en Cuba.</p>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center">
+			{button color="blue" size="small" href="WEB http://www.fhrcuba.org/es/conectacuba/" caption="Leer m&aacute;s"}
+		</td>
+	</tr>
+</table>
+
+{space30}
+
 <center>
 	<h1 style="text-decoration:none; font-size:2.5em;">&iexcl;Buena suerte!</h1>
 <center>

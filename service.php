@@ -29,6 +29,10 @@ class Rifa extends Service
 		$userTickets = $connection->deepQuery("SELECT count(*) as tickets FROM ticket WHERE raffle_id is NULL AND email = '{$request->email}'");
 		$userTickets = $userTickets[0]->tickets;
 
+		// get the path to wwww 
+		$di = \Phalcon\DI\FactoryDefault::getDefault();
+		$wwwroot = $di->get('path')['root'];
+
 		// create a json object to send to the template
 		$responseContent = array(
 			"description" => $raffle->item_desc,
@@ -36,7 +40,8 @@ class Rifa extends Service
 			"endDate" => $raffle->end_date,
 			"tickets" => $raffle->tickets,
 			"image" => $raffle->image,
-			"userTickets" => $userTickets
+			"userTickets" => $userTickets,
+			"connectCubaLogo" => "$wwwroot/public/images/connectcuba.jpg"
 		);
 
 		// create the final user Response
