@@ -29,6 +29,9 @@ class Rifa extends Service
 		$userTickets = $connection->deepQuery("SELECT count(*) as tickets FROM ticket WHERE raffle_id is NULL AND email = '{$request->email}'");
 		$userTickets = $userTickets[0]->tickets;
 
+		// link to connect cuba logo
+		$connectCubaLogo = "{$this->pathToService}/images/connectcuba.jpg";
+
 		// create a json object to send to the template
 		$responseContent = array(
 			"description" => $raffle->item_desc,
@@ -36,13 +39,14 @@ class Rifa extends Service
 			"endDate" => $raffle->end_date,
 			"tickets" => $raffle->tickets,
 			"image" => $raffle->image,
-			"userTickets" => $userTickets
+			"userTickets" => $userTickets,
+			"connectCubaLogo" => $connectCubaLogo
 		);
 
 		// create the final user Response
 		$response = new Response();
 		$response->subject = "La Rifa de Apretaste";
-		$response->createFromTemplate("basic.tpl", $responseContent, array($raffle->image));
+		$response->createFromTemplate("basic.tpl", $responseContent, array($raffle->image, $connectCubaLogo));
 		return $response;
 	}
 
