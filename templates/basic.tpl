@@ -51,12 +51,12 @@
 	<tr>
 		<td>{img src="{$connectCubaLogo}" alt="Connect Cuba" width="100px"}</td>
 		<td style="padding-left:10px;" valign="top">
-			<p>Esta Rifa est&aacute; patrocinada por <font color="#094E9D">Connecta Cuba</font>, una organizaci&oacute;n sin &aacute;nimos de lucro creada para expandir el alcance de internet libre de censura en Cuba.</p>
+			<p>Esta Rifa est&aacute; patrocinada por <font color="#094E9D">Conecta Cuba</font>, una organizaci&oacute;n sin &aacute;nimos de lucro creada para expandir el alcance de internet libre en Cuba y hacerlo llegar a las manos de todos.</p>
 		</td>
 	</tr>
 	<tr>
 		<td colspan="2" align="center">
-			{button color="blue" size="small" href="WEB http://www.fhrcuba.org/es/conectacuba/" caption="Leer m&aacute;s"}
+			{button color="blue" size="small" href="WEB PDF http://conectacuba.apretaste.com" caption="Leer m&aacute;s"}
 		</td>
 	</tr>
 </table>
