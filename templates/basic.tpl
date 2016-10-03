@@ -25,19 +25,19 @@
 		<tr>
 			<td align="center" valign="top" style="border:1px solid gray;padding:5px" width="33%">
 				<b>1 Ticket</b><br/>
-				<font color="green">$0.50</font><br/>
+				<font color="green">&sect;0.50</font><br/>
 				{space10}
 				{button href="CREDITO COMPRAR 1TICKET" caption="Comprar"}
 			</td>
 			<td align="center" valign="top" style="border:1px solid gray;padding:5px" width="33%">
 				<b>5 Tickets</b><br/>
-				<font color="green">$2.00</font><br/>
+				<font color="green">&sect;2.00</font><br/>
 				{space10}
 				{button href="CREDITO COMPRAR 5TICKETS" caption="Comprar"}
 			</td>
 			<td align="center" valign="top" style="border:1px solid gray;padding:5px" width="33%">
 				<b>10 Tickets</b><br/>
-				<font color="green">$3.50</font><br/>
+				<font color="green">&sect;3.50</font><br/>
 				{space10}
 				{button href="CREDITO COMPRAR 10TICKETS" caption="Comprar"}
 			</td>
