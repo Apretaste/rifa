@@ -69,10 +69,10 @@ class Rifa extends Service
 		if(empty($numberTickets)) return false;
 
 		// create as many tickets as necesary
-		$query = "INSERT INTO ticket(email,paid) VALUES ";
+		$query = "INSERT INTO ticket(email,origin) VALUES ";
 		for ($i=0; $i<$numberTickets; $i++)
 		{
-			$query .= "('{$payment->buyer}','1')";
+			$query .= "('{$payment->buyer}','PURCHASE')";
 			$query .= $i < $numberTickets-1 ? "," : ";"; 
 		}
 
