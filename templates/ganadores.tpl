@@ -22,7 +22,7 @@
 			</td>
 			<td align="center" valign="top">
 				<font color="#A9A9A9" size="8">&#10103;</font><br/>
-				{if $raffle->winner_1_picture}
+				{if $raffle->winner_2_picture}
 					{img src="{$raffle->winner_2_picture}" alt="{$raffle->winner_2_username}" width="100" height="100"}
 				{else}
 					{noimage width="100%" height="100" text="Aun sin<br/>foto :'-("}
@@ -31,7 +31,7 @@
 			</td>
 			<td align="center" valign="top">
 				<font color="#cd7f32" size="8">&#10104;</font><br/>
-				{if $raffle->winner_1_picture}
+				{if $raffle->winner_3_picture}
 					{img src="{$raffle->winner_3_picture}" alt="{$raffle->winner_3_username}" width="100" height="100"}
 				{else}
 					{noimage width="100%" height="100" text="Aun sin<br/>foto :'-("}
@@ -41,11 +41,7 @@
 		</tr>
 		{if not $smarty.foreach.winners.last}
 			<tr>
-				<td colspan="3">
-					{space10}
-					<hr/>
-					{space10}
-				</td>
+				<td colspan="3">{space10}<hr/>{space10}</td>
 			</tr>
 		{/if}
 	{/foreach}
