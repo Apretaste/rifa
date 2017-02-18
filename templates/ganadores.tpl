@@ -13,30 +13,30 @@
 		<tr>
 			<td align="center" valign="top">
 				<font color="#FFD700" size="8">&#10102;</font><br/>
-				{if $raffle->winner_1_picture}
-					{img src="{$raffle->winner_1_picture}" alt="{$raffle->winner_1_username}" width="100" height="100"}
+				{if $raffle->winner_1->picture}
+					{img src="{$raffle->winner_1->picture->picture_internal}" alt="{$raffle->winner_1->username}" width="100" height="100"}
 				{else}
-					{noimage width="100%" height="100" text="Aun sin<br/>foto :'-("}
+					{noimage width="100" height="100" text="Aun sin<br/>foto :'-("}
 				{/if}
-				<p>{link href="PERFIL @{$raffle->winner_1_username}" caption="@{$raffle->winner_1_username}"}</p>
+				<p>{link href="PERFIL @{$raffle->winner_1->username}" caption="@{$raffle->winner_1->username}"}</p>
 			</td>
 			<td align="center" valign="top">
 				<font color="#A9A9A9" size="8">&#10103;</font><br/>
-				{if $raffle->winner_2_picture}
-					{img src="{$raffle->winner_2_picture}" alt="{$raffle->winner_2_username}" width="100" height="100"}
+				{if $raffle->winner_2->picture}
+					{img src="{$raffle->winner_2->picture->picture_internal}" alt="{$raffle->winner_2->username}" width="100" height="100"}
 				{else}
-					{noimage width="100%" height="100" text="Aun sin<br/>foto :'-("}
+					{noimage width="100" height="100" text="Aun sin<br/>foto :'-("}
 				{/if}
-				<p>{link href="PERFIL @{$raffle->winner_2_username}" caption="@{$raffle->winner_2_username}"}</p>
+				<p>{link href="PERFIL @{$raffle->winner_2->username}" caption="@{$raffle->winner_2->username}"}</p>
 			</td>
 			<td align="center" valign="top">
 				<font color="#cd7f32" size="8">&#10104;</font><br/>
-				{if $raffle->winner_3_picture}
-					{img src="{$raffle->winner_3_picture}" alt="{$raffle->winner_3_username}" width="100" height="100"}
+				{if $raffle->winner_3->picture}
+					{img src="{$raffle->winner_3->picture->picture_internal}" alt="{$raffle->winner_3->username}" width="100" height="100"}
 				{else}
-					{noimage width="100%" height="100" text="Aun sin<br/>foto :'-("}
+					{noimage width="100" height="100" text="Aun sin<br/>foto :'-("}
 				{/if}
-				<p>{link href="PERFIL @{$raffle->winner_3_username}" caption="@{$raffle->winner_3_username}"}</p>
+				<p>{link href="PERFIL @{$raffle->winner_3->username}" caption="@{$raffle->winner_3->username}"}</p>
 			</td>
 		</tr>
 		{if not $smarty.foreach.winners.last}

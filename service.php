@@ -71,46 +71,18 @@ class Rifa extends Service
 			ORDER BY start_date DESC
 			LIMIT 6");
 
-		// get path to root folder
-		$di = \Phalcon\DI\FactoryDefault::getDefault();
-		$wwwroot = $di->get('path')['root'];
-
-		// get usernames
 		$images = array();
 		foreach ($raffles as $raffle)
 		{
 			// get username
-			$raffle->winner_1_username = $this->utils->getUsernameFromEmail($raffle->winner_1);
-			$raffle->winner_2_username = $this->utils->getUsernameFromEmail($raffle->winner_2);
-			$raffle->winner_3_username = $this->utils->getUsernameFromEmail($raffle->winner_3);
+			$raffle->winner_1 = $this->utils->getPerson($raffle->winner_1);
+			$raffle->winner_2 = $this->utils->getPerson($raffle->winner_2);
+			$raffle->winner_3 = $this->utils->getPerson($raffle->winner_3);
 
-			$image_winner_1 = "$wwwroot/public/profile/thumbnail/{$raffle->winner_1}.jpg";
-			$image_winner_2 = "$wwwroot/public/profile/thumbnail/{$raffle->winner_2}.jpg";
-			$image_winner_3 = "$wwwroot/public/profile/thumbnail/{$raffle->winner_3}.jpg";
-
-			// get picture foe winner 1
-			$raffle->winner_1_picture = false;
-			if(file_exists($image_winner_1))
-			{
-				$images[] = $image_winner_1;
-				$raffle->winner_1_picture = $image_winner_1;
-			}
-
-			// get picture foe winner 2
-			$raffle->winner_2_picture = false;
-			if(file_exists($image_winner_2))
-			{
-				$images[] = $image_winner_2;
-				$raffle->winner_2_picture = $image_winner_2;
-			}
-
-			// get picture foe winner 3
-			$raffle->winner_3_picture = false;
-			if(file_exists($image_winner_3))
-			{
-				$images[] = $image_winner_3;
-				$raffle->winner_1_picture = $image_winner_3;
-			}
+			// get images
+			if($raffle->winner_1->picture) $images[] = $raffle->winner_1->picture_internal;
+			if($raffle->winner_2->picture) $images[] = $raffle->winner_2->picture_internal;
+			if($raffle->winner_3->picture) $images[] = $raffle->winner_3->picture_internal;
 		}
 
 		// create the final user Response
