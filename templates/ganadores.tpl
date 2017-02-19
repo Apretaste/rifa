@@ -14,7 +14,7 @@
 			<td align="center" valign="top">
 				<font color="#FFD700" size="8">&#10102;</font><br/>
 				{if $raffle->winner_1->picture}
-					{img src="{$raffle->winner_1->picture->picture_internal}" alt="{$raffle->winner_1->username}" width="100" height="100"}
+					{img src="{$raffle->winner_1->picture_internal}" alt="{$raffle->winner_1->username}" width="100" height="100"}
 				{else}
 					{noimage width="100" height="100" text="Aun sin<br/>foto :'-("}
 				{/if}
@@ -23,7 +23,7 @@
 			<td align="center" valign="top">
 				<font color="#A9A9A9" size="8">&#10103;</font><br/>
 				{if $raffle->winner_2->picture}
-					{img src="{$raffle->winner_2->picture->picture_internal}" alt="{$raffle->winner_2->username}" width="100" height="100"}
+					{img src="{$raffle->winner_2->picture_internal}" alt="{$raffle->winner_2->username}" width="100" height="100"}
 				{else}
 					{noimage width="100" height="100" text="Aun sin<br/>foto :'-("}
 				{/if}
@@ -32,7 +32,7 @@
 			<td align="center" valign="top">
 				<font color="#cd7f32" size="8">&#10104;</font><br/>
 				{if $raffle->winner_3->picture}
-					{img src="{$raffle->winner_3->picture->picture_internal}" alt="{$raffle->winner_3->username}" width="100" height="100"}
+					{img src="{$raffle->winner_3->picture_internal}" alt="{$raffle->winner_3->username}" width="100" height="100"}
 				{else}
 					{noimage width="100" height="100" text="Aun sin<br/>foto :'-("}
 				{/if}
