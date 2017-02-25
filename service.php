@@ -26,7 +26,7 @@ class Rifa extends Service
 
 		// get number of tickets adquired by the user
 		$connection = new Connection();
-		$userTickets = $connection->deepQuery("SELECT count(*) as tickets FROM ticket WHERE raffle_id is NULL AND email = '{$request->email}'");
+		$userTickets = $connection->deepQuery("SELECT count(ticket_id) as tickets FROM ticket WHERE raffle_id is NULL AND email = '{$request->email}'");
 		$userTickets = $userTickets[0]->tickets;
 
 		// link to connect cuba logo
