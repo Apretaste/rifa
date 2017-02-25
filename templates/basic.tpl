@@ -15,6 +15,7 @@
 		Invite a sus amigos y gane tickets para nuestra rifa.
 	</small></p>
 	{button href="INVITAR su@amigo.cu" caption="Invitar ahora" body="Cambie en el asunto su@amigo.cu por el email de la persona a invitar. Puede agregar varios emails, separados por espacios o comas"}
+	{button href="RIFA GANADORES" caption="Ganadores" color="grey"}
 	{space15}
 </center>
 
