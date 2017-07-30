@@ -1,7 +1,7 @@
 <service>
 	<serviceName>rifa</serviceName>
 	<serviceDescription>Muestra nuestra Rifa mensual y permite comprar tickets</serviceDescription>
-	<creatorEmail>salvi.pascual@gmail.com</creatorEmail>
+	<creatorEmail>salvi@apretaste.com</creatorEmail>
 	<serviceCategory>ocio</serviceCategory>
 	<serviceUsage>
 		<![CDATA[
