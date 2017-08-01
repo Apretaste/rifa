@@ -11,10 +11,10 @@
 <center>
 	{space10}
 	<p><small>
-		Usted tiene <b>{$userTickets} tickets</b>. Puede ver sus tickets desde su {link href="PERFIL" caption="perfil"}.<br/>
-		Invite a sus amigos y gane tickets para nuestra rifa.
+		Usted tiene <b>{$userTickets} tickets</b>.<br/>
+		Invite a sus amigos y gane m&aacute;s tickets.
 	</small></p>
-	{button href="INVITAR su@amigo.cu" caption="Invitar ahora" body="Cambie en el asunto su@amigo.cu por el email de la persona a invitar. Puede agregar varios emails, separados por espacios o comas"}
+	{button href="INVITAR" caption="Invitar ahora" body="Agregue el email de su amigo en el asunto despues de la palabra INVITAR. Por ejemplo: INVITAR su@amigo.cu. Puede agregar varios emails separados por espacios o comas" desc="Agregue el email de su amigo o familia a invitar" popup="true"}
 	{button href="RIFA GANADORES" caption="Ganadores" color="grey"}
 	{space15}
 </center>
