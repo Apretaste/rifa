@@ -1,23 +1,19 @@
 <h1>Rifa de Apretaste</h1>
-<p>Gracias por participar en la Rifa de Apretaste. Creemos en el poder de la amistad, por lo que siempre premiamos a los usuarios que invitan a sus amigos y familia a disfrutar de Apretaste</p>
-<p>Por cada persona que invites y empiece a usar Apretaste te ganarás un ticket. El <b>{$endDate|date_format:"%e de %B del %Y"}</b> pondremos todos los tickets en un bombo y enviaremos un email con la lista de ganadores. Como en todas las rifas, mientras más tickets tengas, más oportunidades de ganar.</p>
+<p>Estamos contentos de poner traerles nuestra rifa una vez m&aacute;s. Por ahora los tickets solo podr&aacute;n comprarse con cr&eacute;ditos de Apretaste. &iquest;No tiene suficientes cr&eacute;ditos? No se desanime, conseguirlos es f&aacute;cil y entretenido, revise {link href="WEB credito.apretaste.com" caption="formas de conseguir cr&eacute;ditos"}.</p>
+
+<p>El <b>{$endDate|date_format:"%e de %B del %Y"}</b> pondremos todos los tickets en un bombo y enviaremos un email con la lista de ganadores. Como en todas las rifas, mientras más tickets tengas, más oportunidades de ganar.</p>
 
 {img src="{$image}" alt="Articulo a rifar" width="100%"}
 
 <p>{$description}</p>
 
-{space10}
+{space15}
 
 <center>
-	{space10}
-	<p><small>
-		Usted tiene <b>{$userTickets} tickets</b>.<br/>
-		Invite a sus amigos y gane m&aacute;s tickets.
-	</small></p>
-	{button href="INVITAR" caption="Invitar ahora" body="Agregue el email de su amigo en el asunto despues de la palabra INVITAR. Por ejemplo: INVITAR su@amigo.cu. Puede agregar varios emails separados por espacios o comas" desc="Agregue el email de su amigo o familia a invitar" popup="true"}
-	{button href="RIFA GANADORES" caption="Ganadores" color="grey"}
-	{space15}
+	<p><big><big><big>Usted tiene <b>{$userTickets}</b> tickets</big></big></big></p>
 </center>
+
+{space15}
 
 <h1>Venta de tickets</h1>
 
@@ -48,19 +44,10 @@
 
 {space30}
 
-<table width="100%" align="center" border="0">
-	<tr>
-		<td>{img src="{$connectCubaLogo}" alt="Connect Cuba" width="100px"}</td>
-		<td style="padding-left:10px;" valign="top">
-			<p>Esta Rifa est&aacute; patrocinada por <font color="#094E9D">Conecta Cuba</font>, una organizaci&oacute;n sin &aacute;nimos de lucro creada para expandir el alcance de internet libre en Cuba y hacerlo llegar a las manos de todos.</p>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="2" align="center">
-			{button color="blue" size="small" href="WEB PDF http://conectacuba.apretaste.com" caption="Leer m&aacute;s"}
-		</td>
-	</tr>
-</table>
+<center>
+	<p>Gane esta Rifa y entre a nuestro "Sal&oacute;n de la Fama"</p>
+	{button href="RIFA GANADORES" caption="Ganadores" color="grey"}
+</center>
 
 {space30}
 
