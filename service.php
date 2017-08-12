@@ -7,7 +7,7 @@ class Rifa extends Service
 	 *
 	 * @param Request
 	 * @return Response
-	 * */
+	 */
 	public function _main(Request $request)
 	{
 		// set Spanish so the date come in Spanish
@@ -17,7 +17,7 @@ class Rifa extends Service
 		$raffle = $this->utils->getCurrentRaffle();
 
 		// show message if there is no open raffle
-		if( ! $raffle)
+		if(empty($raffle))
 		{
 			$response = new Response();
 			$response->subject = "No hay ninguna Rifa abierta";
@@ -27,11 +27,8 @@ class Rifa extends Service
 
 		// get number of tickets adquired by the user
 		$connection = new Connection();
-		$userTickets = $connection->deepQuery("SELECT count(ticket_id) as tickets FROM ticket WHERE raffle_id is NULL AND email = '{$request->email}'");
+		$userTickets = $connection->query("SELECT count(ticket_id) as tickets FROM ticket WHERE raffle_id is NULL AND email = '{$request->email}'");
 		$userTickets = $userTickets[0]->tickets;
-
-		// link to connect cuba logo
-		$connectCubaLogo = "{$this->pathToService}/images/connectcuba.jpg";
 
 		// create a json object to send to the template
 		$responseContent = array(
@@ -40,14 +37,13 @@ class Rifa extends Service
 			"endDate" => $raffle->end_date,
 			"tickets" => $raffle->tickets,
 			"image" => $raffle->image,
-			"userTickets" => $userTickets,
-			"connectCubaLogo" => $connectCubaLogo
+			"userTickets" => $userTickets
 		);
 
 		// create the final user Response
 		$response = new Response();
 		$response->subject = "La Rifa de Apretaste";
-		$response->createFromTemplate("basic.tpl", $responseContent, array($raffle->image, $connectCubaLogo));
+		$response->createFromTemplate("basic.tpl", $responseContent, array($raffle->image));
 		return $response;
 	}
 
@@ -56,7 +52,7 @@ class Rifa extends Service
 	 *
 	 * @param Request
 	 * @return Response
-	 * */
+	 */
 	public function _ganadores (Request $request)
 	{
 		// set Spanish so the date come in Spanish
@@ -64,7 +60,7 @@ class Rifa extends Service
 
 		// get all raffles
 		$connection = new Connection();
-		$raffles = $connection->deepQuery("
+		$raffles = $connection->query("
 			SELECT start_date, winner_1, winner_2, winner_3
 			FROM raffle
 			WHERE winner_1 <> ''
@@ -97,7 +93,7 @@ class Rifa extends Service
 	 * Add new tickets to the database when the user pays
 	 *
 	 *  @author salvipascual
-	 * */
+	 */
 	public function payment(Payment $payment)
 	{
 		// get the number of times the loop has to iterate
@@ -119,6 +115,6 @@ class Rifa extends Service
 
 		// save the tickets in the database
 		$connection = new Connection();
-		$transfer = $connection->deepQuery($query);
+		$transfer = $connection->query($query);
 	}
 }
