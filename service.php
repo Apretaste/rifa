@@ -20,6 +20,7 @@ class Rifa extends Service
 		if(empty($raffle))
 		{
 			$response = new Response();
+			$response->setCache("300"); // cache for 3 hours
 			$response->subject = "No hay ninguna Rifa abierta";
 			$response->createFromText("Lo sentimos, no hay ninguna Rifa abierta ahora mismo. Pruebe nuevamente en algunos d&iacute;as.");
 			return $response;
@@ -40,8 +41,13 @@ class Rifa extends Service
 			"userTickets" => $userTickets
 		);
 
+		// calculate minutes till the end of raffle
+		$monthEnd = strtotime(date("Y-m-t 23:59:59"));
+		$minsUntilMonthEnd = ceil(($monthEnd - time())/60);
+
 		// create the final user Response
 		$response = new Response();
+		$response->setCache($minsUntilMonthEnd);
 		$response->subject = "La Rifa de Apretaste";
 		$response->createFromTemplate("basic.tpl", $responseContent, array($raffle->image));
 		return $response;
@@ -81,8 +87,13 @@ class Rifa extends Service
 			if($raffle->winner_3->picture) $images[] = $raffle->winner_3->picture_internal;
 		}
 
+		// calculate minutes till the end of raffle
+		$monthEnd = strtotime(date("Y-m-t 23:59:59"));
+		$minsUntilMonthEnd = ceil(($monthEnd - time())/60);
+
 		// create the final user Response
 		$response = new Response();
+		$response->setCache($minsUntilMonthEnd);
 		$response->subject = "Ganadores de la Rifa";
 		$response->createFromTemplate("ganadores.tpl", array("raffles"=>$raffles), $images);
 		return $response;
