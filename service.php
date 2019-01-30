@@ -20,6 +20,8 @@ class Service
 			return $response->setTemplate('message.ejs', []);
 		}
 
+		// @TODO make tickets table to use ID instead of email
+
 		// get number of tickets adquired by the user
 		$userTickets = Connection::query("SELECT count(ticket_id) as tickets FROM ticket WHERE raffle_id is NULL AND email = '{$request->person->email}'");
 		$userTickets = $userTickets[0]->tickets;
@@ -52,9 +54,6 @@ class Service
 	 */
 	public function _ganadores (Request $request, Response $response)
 	{
-		// set Spanish so the date come in Spanish
-		setlocale(LC_TIME, "es_ES");
-
 		// get all raffles
 		$raffles = Connection::query("
 			SELECT start_date, winner_1, winner_2, winner_3
