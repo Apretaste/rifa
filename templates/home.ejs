@@ -1,0 +1,38 @@
+<h1>Rifa de Apretaste</h1>
+<p>Estamos contentos de poner traerles nuestra rifa mensual. Canjee sus cr&eacute;ditos por tickets y prep&aacute;rese para ganar. El <b><%= formatDate(raffle.end_date) %> a las 11:59pm</b> pondremos los tickets en un bombo y escribiremos a los ganadores.</p>
+
+<img class="fullscreen" src="/raffle/<%= raffle.image %>" alt="Articulo a rifar"/>
+
+<div class="chip">
+	<i class="material-icons tiny">local_offer</i>
+	Usted tiene <b><%= raffle.tickets %> ticket(s)</b>
+</div>
+
+<p><%= raffle.item_desc %></p>
+<p>Como en todas las rifas, con un ticket basta para llevarse un premio, pero mientras m&aacute;s tickets, m&aacute;s oportunidades de ganar.</p>
+
+<h1>Venta de tickets</h1>
+<p>Usted tiene &sect;<%= Number.parseFloat(credit).toFixed(2) %>. &iquest;No tiene suficientes cr&eacute;ditos? No se desanime, conseguirlos es f&aacute;cil y entretenido, revise las <a href="#" onclick="apretaste.send({'command':'CREDITO OBTENER'})">formas de conseguir cr&eacute;ditos</a>.
+
+<ul class="collection">
+	<li class="collection-item avatar">
+		<i class="material-icons circle">local_offer</i>
+		<span class="title"><b>1 Ticket</b></span>
+		<p>Tira un ch&iacute;charo a ver que pasa.</p>
+		<a class="secondary-content waves-effect waves-light btn-small fixed-width" href="#!" onclick="apretaste.send({'command':'CREDITO PROCESAR','data':{'item':'1TICKET'}})">Canjear &sect;0.50</a>
+	</li>
+	<li class="collection-item avatar">
+		<i class="material-icons circle">style</i>
+		<span class="title"><b>5 Tickets</b></span>
+		<p>Aumenta tus changes. La suerte es loca.</p>
+		<a class="secondary-content waves-effect waves-light btn-small fixed-width" href="#!" onclick="apretaste.send({'command':'CREDITO PROCESAR','data':{'item':'5TICKETS'}})">Canjear &sect;2.00</a>
+	</li>
+	<li class="collection-item avatar">
+		<i class="material-icons circle">redeem</i>
+		<span class="title"><b>10 Tickets</b></span>
+		<p>Ponte serio y aseg&uacute;rate el premio.</p>
+		<a class="secondary-content waves-effect waves-light btn-small fixed-width" href="#!" onclick="apretaste.send({'command':'CREDITO PROCESAR','data':{'item':'10TICKETS'}})">Canjear &sect;3.50</a>
+	</li>
+</ul>
+
+<p>Gane esta Rifa y entre a nuestro <a href="#" onclick="apretaste.send({'command':'RIFA GANADORES'})">sal&oacute;n de la Fama</a>. &iexcl;Buena suerte!</p>

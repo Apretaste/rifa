@@ -1,0 +1,8 @@
+.card-title, .card-content {
+	padding-top: 0px !important;
+	padding-bottom: 0px !important;
+}
+
+.person-image {
+	height: 200px;
+}

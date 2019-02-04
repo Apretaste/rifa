@@ -1,19 +1,16 @@
-var service = {
-	// get the value from the 
-	submit: function() {
-		// get the coupon
-		var coupon = $('#coupon').val();
+//
+// formats a date
+//
+function formatDate(dateStr) {
+	var date = new Date(dateStr);
+	var year = date.getFullYear();
+	var month = (1 + date.getMonth()).toString().padStart(2, '0');
+	var day = date.getDate().toString().padStart(2, '0');
+	return day + '/' + month + '/' + year;
+}
 
-		// check the coupon is not empty
-		if( ! coupon) {
-			M.toast({html: 'El cup&oacute;n no puede estar vac&iacute;o'});
-			return false;
-		}
-
-		// send the request
-		apretaste.send({
-			command: "CUPONES CANJEAR", 
-			data: {"coupon":coupon},
-			redirect: true});
-	}
+function formatDateText(dateStr) {
+	var months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+	var date = new Date(dateStr);
+	return months[date.getMonth()] + ' ' + date.getFullYear();
 }

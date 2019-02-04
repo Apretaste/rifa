@@ -11,39 +11,31 @@ class Service
 	public function _main (Request $request, Response $response)
 	{
 		// get the current raffle
-		$raffle = Utils::getCurrentRaffle();
+		$raffle = Connection::query("SELECT * FROM raffle WHERE CURRENT_TIMESTAMP BETWEEN start_date AND end_date");
 
-		// show message if there is no open raffle
+		// show notice if there is no open raffle
 		if(empty($raffle)) {
  			$response->setCache("300");
-			$response->setLayout('piropazo.ejs');
-			return $response->setTemplate('message.ejs', []);
-		}
+			return $response->setTemplate('message.ejs');
+		} $raffle = $raffle[0];
 
-		// @TODO make tickets table to use ID instead of email
+		// get the image of the raffle
+		$di = \Phalcon\DI\FactoryDefault::getDefault();
+		$image = $di->get('path')['root'] . "/public/raffle/" . md5($raffle->raffle_id) . ".jpg";
+		$raffle->image = basename($image);
 
 		// get number of tickets adquired by the user
 		$userTickets = Connection::query("SELECT count(ticket_id) as tickets FROM ticket WHERE raffle_id is NULL AND email = '{$request->person->email}'");
-		$userTickets = $userTickets[0]->tickets;
-
-		// create a json object to send to the template
-		$content = array(
-			"description" => $raffle->item_desc,
-			"startDate" => $raffle->start_date,
-			"endDate" => $raffle->end_date,
-			"tickets" => $raffle->tickets,
-			"image" => $raffle->image,
-			"userTickets" => $userTickets
-		);
+		$raffle->tickets = $userTickets[0]->tickets;
 
 		// calculate minutes till the end of raffle
 		$monthEnd = strtotime(date("Y-m-t 23:59:59"));
 		$minsUntilMonthEnd = ceil(($monthEnd - time())/60);
 
-		// create the final user Response
+		// create the user Response
 		$response->setCache($minsUntilMonthEnd);
-		$response->setTemplate("basic.tpl", $content, array($raffle->image));
-		return $response;
+		$content = ["raffle"=>$raffle, "credit"=>$request->person->credit];
+		$response->setTemplate("home.ejs", $content, [$image]);
 	}
 
 	/**
@@ -62,18 +54,22 @@ class Service
 			ORDER BY start_date DESC
 			LIMIT 6");
 
-		$images = array();
-		foreach ($raffles as $raffle)
-		{
+		$images = [];
+		foreach ($raffles as $raffle) {
 			// get username
-			$raffle->winner_1 = Utils::getPerson($raffle->winner_1);
-			$raffle->winner_2 = Utils::getPerson($raffle->winner_2);
-			$raffle->winner_3 = Utils::getPerson($raffle->winner_3);
+			$raffle->winner_1 = Social::prepareUserProfile(Utils::getPerson($raffle->winner_1));
+			$raffle->winner_2 = Social::prepareUserProfile(Utils::getPerson($raffle->winner_2));
+			$raffle->winner_3 = Social::prepareUserProfile(Utils::getPerson($raffle->winner_3));
 
 			// get images
-			if($raffle->winner_1->picture) $images[] = $raffle->winner_1->picture_internal;
-			if($raffle->winner_2->picture) $images[] = $raffle->winner_2->picture_internal;
-			if($raffle->winner_3->picture) $images[] = $raffle->winner_3->picture_internal;
+			if($raffle->winner_1->picture) $images[] = $raffle->winner_1->picture;
+			if($raffle->winner_2->picture) $images[] = $raffle->winner_2->picture;
+			if($raffle->winner_3->picture) $images[] = $raffle->winner_3->picture;
+
+			// prepare images for the template
+			if($raffle->winner_1->picture) $raffle->winner_1->picture = basename($raffle->winner_1->picture);
+			if($raffle->winner_2->picture) $raffle->winner_2->picture = basename($raffle->winner_2->picture);
+			if($raffle->winner_3->picture) $raffle->winner_3->picture = basename($raffle->winner_3->picture);
 		}
 
 		// calculate minutes till the end of raffle
@@ -82,36 +78,6 @@ class Service
 
 		// create the final user Response
 		$response->setCache($minsUntilMonthEnd);
-		$response->setTemplate("ganadores.tpl", array("raffles"=>$raffles), $images);
-		return $response;
-	}
-
-	/**
-	 * Function executed when a payment is finalized
-	 * Add new tickets to the database when the user pays
-	 *
-	 *  @author salvipascual
-	 */
-	public function payment(Payment $payment)
-	{
-		// get the number of times the loop has to iterate
-		$numberTickets = null;
-		if($payment->code == "1TICKET") $numberTickets = 1;
-		if($payment->code == "5TICKETS") $numberTickets = 5;
-		if($payment->code == "10TICKETS") $numberTickets = 10;
-
-		// do not give tickets for wrong codes
-		if(empty($numberTickets)) return false;
-
-		// create as many tickets as necesary
-		$query = "INSERT INTO ticket(email,origin) VALUES ";
-		for ($i=0; $i<$numberTickets; $i++)
-		{
-			$query .= "('{$payment->buyer}','PURCHASE')";
-			$query .= $i < $numberTickets-1 ? "," : ";";
-		}
-
-		// save the tickets in the database
-		$transfer = Connection::query($query);
+		$response->setTemplate("winners.ejs", ["winners"=>$raffles], $images);
 	}
 }
