@@ -1,51 +1,33 @@
-<h1>Sal&oacute;n de la fama</h1>
-<p>A continuaci&oacute;n los ganadores de las seis &uacute;ltimas rifas.</p>
+<div class="row">
+	<div class="col s12">
+		<h1>Salón de la fama</h1>
+		<p>A continuación los ganadores de las últimas rifas.</p>
 
-<% winners.forEach(function(w){ %>
-	<div class="row">
-		<div class="col 12">
+		<% winners.forEach(function(w){ %>
 			<h2><%= formatDateText(w.start_date) %></h2>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col s4">
-			<div class="card">
-				<div class="card-image">
+			<ul class="collection">
+				<li class="collection-item avatar">
 					<% if(w.winner_1.picture) var src="{{APP_IMAGE_PATH}}" + w.winner_1.picture;
 					else var src="{{APP_RESOURCES}}/images/user.jpg"; %>
-					<img class="person-image" src="<%= src %>" alt="<%= w.winner_1.username %>"/>
-					<span class="card-title yellow accent-1 black-text">@<%= w.winner_1.username %></span>
-				</div>
-				<div class="card-content center-align">
-					<i class="material-icons large yellow-text">looks_one</i>
-				</div>
-			</div>
-		</div>
-		<div class="col s4">
-			<div class="card">
-				<div class="card-image">
+					<img class="circle" src="<%= src %>" alt="<%= w.winner_1.username %>"/>
+					<span class="title orange-text"><b>@<%= w.winner_1.username %></b></span>
+					<p>Ganó el primer lugar de la rifa.</p>
+				</li>
+				<li class="collection-item avatar">
 					<% if(w.winner_2.picture) var src="{{APP_IMAGE_PATH}}" + w.winner_2.picture;
 					else var src="{{APP_RESOURCES}}/images/user.jpg"; %>
-					<img class="person-image" src="<%= src %>" alt="<%= w.winner_1.username %>"/>
-					<span class="card-title grey accent-1 black-text">@<%= w.winner_2.username %></span>
-				</div>
-				<div class="card-content center-align">
-					<i class="material-icons large grey-text">looks_two</i>
-				</div>
-			</div>
-		</div>
-		<div class="col s4">
-			<div class="card">
-				<div class="card-image">
+					<img class="circle" src="<%= src %>" alt="<%= w.winner_2.username %>"/>
+					<span class="title grey-text"><b>@<%= w.winner_2.username %></b></span>
+					<p>Ganó el segundo lugar de la rifa.</p>
+				</li>
+				<li class="collection-item avatar">
 					<% if(w.winner_3.picture) var src="{{APP_IMAGE_PATH}}" + w.winner_3.picture;
 					else var src="{{APP_RESOURCES}}/images/user.jpg"; %>
-					<img class="person-image" src="<%= src %>" alt="<%= w.winner_1.username %>"/>
-					<span class="card-title brown accent-4">@<%= w.winner_3.username %></span>
-				</div>
-				<div class="card-content center-align">
-					<i class="material-icons large brown-text">looks_3</i>
-				</div>
-			</div>
-		</div>
+					<img class="circle" src="<%= src %>" alt="<%= w.winner_3.username %>"/>
+					<span class="title brown-text"><b>@<%= w.winner_3.username %></b></span>
+					<p>Ganó el tercer lugar de la rifa.</p>
+				</li>
+			</ul>
+		<% }); %>
 	</div>
-<% }); %>
+</div>
