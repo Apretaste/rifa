@@ -28,4 +28,5 @@ function payment(Payment $payment)
 
 	// save the tickets in the database
 	Connection::query($query);
+	return true;
 }
