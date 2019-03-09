@@ -22,7 +22,7 @@ class Service
 		// get the image of the raffle
 		$di = \Phalcon\DI\FactoryDefault::getDefault();
 		$image = $di->get('path')['root'] . "/public/raffle/" . md5($raffle->raffle_id) . ".jpg";
-		$raffle->image = basename($image);
+		$raffle->image = $image;
 
 		// get number of tickets adquired by the user
 		$userTickets = Connection::query("SELECT count(ticket_id) as tickets FROM ticket WHERE raffle_id is NULL AND email = '{$request->person->email}'");
@@ -65,11 +65,6 @@ class Service
 			if($raffle->winner_1->picture) $images[] = $raffle->winner_1->picture;
 			if($raffle->winner_2->picture) $images[] = $raffle->winner_2->picture;
 			if($raffle->winner_3->picture) $images[] = $raffle->winner_3->picture;
-
-			// prepare images for the template
-			if($raffle->winner_1->picture) $raffle->winner_1->picture = basename($raffle->winner_1->picture);
-			if($raffle->winner_2->picture) $raffle->winner_2->picture = basename($raffle->winner_2->picture);
-			if($raffle->winner_3->picture) $raffle->winner_3->picture = basename($raffle->winner_3->picture);
 		}
 
 		// calculate minutes till the end of raffle
