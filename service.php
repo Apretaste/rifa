@@ -25,7 +25,7 @@ class Service
 		$raffle->image = $image;
 
 		// get number of tickets adquired by the user
-		$userTickets = Connection::query("SELECT count(ticket_id) as tickets FROM ticket WHERE raffle_id is NULL AND email = '{$request->person->email}'");
+		$userTickets = Connection::query("SELECT count(ticket_id) as tickets FROM ticket WHERE raffle_id is NULL AND email = '{$request->personPrivate->email}'");
 		$raffle->tickets = $userTickets[0]->tickets;
 
 		// calculate minutes till the end of raffle
