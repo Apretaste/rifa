@@ -16,7 +16,7 @@ class Service
     public function _main(Request $request, Response $response)
     {
         // get the current raffle
-        $raffle = Connection::query("SELECT * FROM raffle WHERE CURRENT_TIMESTAMP BETWEEN start_date AND end_date");
+        $raffle = q("SELECT * FROM raffle WHERE CURRENT_TIMESTAMP BETWEEN start_date AND end_date");
 
         // show notice if there is no open raffle
         if (empty($raffle)) {
@@ -32,8 +32,8 @@ class Service
         $raffle->image = $image;
 
         // get number of tickets adquired by the user
-        $userTickets = Connection::query("SELECT count(ticket_id) as tickets FROM ticket WHERE raffle_id is NULL AND person_id = '{$request->person->id}'");
-        $raffle->tickets = $userTickets[0]->tickets;
+        $userTickets = q("SELECT count(ticket_id) as tickets FROM ticket WHERE raffle_id is NULL AND person_id = '{$request->person->id}'");
+        $raffle->tickets = (int) $userTickets[0]->tickets;
 
         // calculate minutes till the end of raffle
         $monthEnd = strtotime(date("Y-m-t 23:59:59"));
@@ -54,7 +54,7 @@ class Service
     public function _ganadores(Request $request, Response $response)
     {
         // get all raffles
-        $raffles = Connection::query("
+        $raffles = q("
 			SELECT start_date, winner_1, winner_2, winner_3
 			FROM raffle
 			WHERE winner_1 <> ''
