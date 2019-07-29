@@ -1,32 +1,37 @@
 <?php
 
+use Apretaste\Model\Query;
+
 /**
  * Function executed when a payment is finalized
  * Add new tickets to the database
  *
- * @author salvipascual
  * @param Payment $payment
+ *
  * @return boolean
+ * @author kumahacker
  */
 function payment(Payment $payment)
 {
-	// get the number of times the loop has to iterate
-	$numberTickets = null;
-	if($payment->code == "1TICKET") $numberTickets = 1;
-	if($payment->code == "5TICKETS") $numberTickets = 5;
-	if($payment->code == "10TICKETS") $numberTickets = 10;
+    $available = [
+        '1TICKET' => 1,
+        '5TICKETS' => 5,
+        '10TICKETS' => 10
+    ];
 
-	// do not give tickets for wrong codes
-	if(empty($numberTickets)) return false;
+    if (isset($available[(string) $payment->code])) {
+        $numberTickets = $available[$payment->code];
+        for ($i=0; $i<$numberTickets; $i++) {
+            q(Query::simpleInsert('ticket', [
+                'email'     => $payment->buyer->email,
+                'person_id' => $payment->buyer->id,
+                'origin'    => 'PURCHASE' // TODO: check this, did you mean 'RAFFLE'
+            ]));
+        }
 
-	// create as many tickets as needed
-	$query = "INSERT INTO ticket (email,origin) VALUES ";
-	for ($i=0; $i<$numberTickets; $i++) {
-		$query .= "('{$payment->buyer->email}','PURCHASE')";
-		$query .= $i < $numberTickets-1 ? "," : ";";
-	}
+        return true;
+    }
 
-	// save the tickets in the database
-	Connection::query($query);
-	return true;
+    return false;
+
 }
