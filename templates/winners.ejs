@@ -3,7 +3,8 @@
 		<h1>Salón de la fama</h1>
 		<p>A continuación los ganadores de las últimas rifas.</p>
 
-		<% winners.forEach(function(w){ %>
+		<% for(var i=0; i<winners.length; i++) { 
+			var w = winners[i]; %>
 			<h2><%= formatDateText(w.start_date) %></h2>
 			<ul class="collection">
 				<li class="collection-item avatar">
@@ -28,6 +29,6 @@
 					<p>Ganó el tercer lugar de la rifa.</p>
 				</li>
 			</ul>
-		<% }); %>
+		<% } %>
 	</div>
 </div>
