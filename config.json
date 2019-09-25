@@ -1,6 +1,6 @@
 {
 	"name": "rifa",
-	"version": "3",
+	"version": 4,
 	"description": "Muestra nuestra Rifa mensual y permite comprar tickets",
 	"category": "ocio",
 	"creator": "salvi@apretaste.org",
