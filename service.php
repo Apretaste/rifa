@@ -5,11 +5,11 @@ use Phalcon\DI\FactoryDefault;
 class Service
 {
 	/**
-	 * Get the latest raffle
+	 * Get the current raffle
 	 *
+	 * @author salvipascual
 	 * @param Request  $request
 	 * @param Response $response
-	 * @return \Response
 	 */
 	public function _main(Request $request, Response $response)
 	{
@@ -43,8 +43,26 @@ class Service
 	}
 
 	/**
-	 * Open the Hall of Fame
+	 * Sell tickets for the raffle
 	 *
+	 * @author salvipascual
+	 * @param Request  $request
+	 * @param Response $response
+	 */
+	public function _tickets(Request $request, Response $response)
+	{
+		// create content structure
+		$content = ["credit" => $request->person->credit];
+
+		// create the user Response
+		$response->setCache("year");
+		$response->setTemplate("tickets.ejs", $content);
+	}
+
+	/**
+	 * Display the list of winners
+	 *
+	 * @author salvipascual
 	 * @param Request  $request
 	 * @param Response $response
 	 */

@@ -1,6 +1,7 @@
-//
-// formats a date
-//
+$(document).ready(function(){
+	$('.tabs').tabs();
+});
+
 function formatDate(dateStr) {
 	var date = new Date(dateStr);
 	var year = date.getFullYear();
