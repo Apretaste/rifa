@@ -15,20 +15,31 @@
 				<i class="material-icons circle">local_offer</i>
 				<span class="title"><b>1 Ticket</b></span>
 				<p>Tira un chícharo a ver que pasa.</p>
-				<p><a href="#!" onclick="apretaste.send({'command':'CREDITO PROCESAR','data':{'item':'1TICKET'}})">Canjear por §0.50</a></p>
+				<p><a href="#!" onclick="openModal('1TICKET')">Canjear por §0.50</a></p>
 			</li>
 			<li class="collection-item avatar">
 				<i class="material-icons circle">style</i>
 				<span class="title"><b>5 Tickets</b></span>
 				<p>Aumenta tus chances. La suerte es loca.</p>
-				<p><a href="#!" onclick="apretaste.send({'command':'CREDITO PROCESAR','data':{'item':'5TICKETS'}})">Canjear por §2.00</a></p>
+				<p><a href="#!" onclick="openModal('5TICKETS')">Canjear por §2.00</a></p>
 			</li>
 			<li class="collection-item avatar">
 				<i class="material-icons circle">redeem</i>
 				<span class="title"><b>10 Tickets</b></span>
 				<p>Ponte serio y asegúrate el premio.</p>
-				<p><a href="#!" onclick="apretaste.send({'command':'CREDITO PROCESAR','data':{'item':'10TICKETS'}})">Canjear por §3.50</a></p>
+				<p><a href="#!" onclick="openModal('10TICKETS')">Canjear por §3.50</a></p>
 			</li>
 		</ul>
+	</div>
+</div>
+
+<div id="modal" class="modal">
+	<div class="modal-content">
+		<input id="code" type="hidden">
+		<p>¿Esta seguro de realizar este canje? Esta acción es irrevocable.</p>
+	</div>
+	<div class="modal-footer">
+		<a href="#!" class="modal-close waves-effect waves-light btn-flat">Cancelar</a>
+		<a onclick="buy()" class="modal-close waves-effect waves-red btn-flat red-text">Canjear</a>
 	</div>
 </div>

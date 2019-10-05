@@ -7,31 +7,21 @@ use Apretaste\Model\Query;
  * Add new tickets to the database
  *
  * @param Payment $payment
- *
  * @return boolean
  * @author kumahacker
  */
 function payment(Payment $payment)
 {
-    $available = [
-        '1TICKET' => 1,
-        '5TICKETS' => 5,
-        '10TICKETS' => 10
-    ];
+	// check the code exists
+	$codes = ['1TICKET' => 1, '5TICKETS' => 5, '10TICKETS' => 10];
+	if(!isset($codes[$payment->code])) return false;
 
-    if (isset($available[(string) $payment->code])) {
-        $numberTickets = $available[$payment->code];
-        for ($i=0; $i<$numberTickets; $i++) {
-            q(Query::simpleInsert('ticket', [
-                'email'     => $payment->buyer->email,
-                'person_id' => $payment->buyer->id,
-                'origin'    => 'PURCHASE' // TODO: check this, did you mean 'RAFFLE'
-            ]));
-        }
+	// create SQL to add the tickets
+	$vals = [];
+	for ($i=0; $i<$codes[$payment->code]; $i++) $vals[] = "('PURCHASE','{$payment->buyer}')";
+	$sql = implode(",", $vals);
 
-        return true;
-    }
-
-    return false;
-
+	// add tickets to the database
+	Connection::query("INSERT INTO ticket (origin,person_id) VALUES $sql;");
+	return true;
 }
