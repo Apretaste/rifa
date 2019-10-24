@@ -1,3 +1,5 @@
+var currentCode = false;
+
 $(document).ready(function(){
 	$('.tabs').tabs();
 	$('.modal').modal();
@@ -19,18 +21,15 @@ function formatDateText(dateStr) {
 
 // show the modal popup
 function openModal(code) {
-	$('#code').val(code);
+	currentCode = code;
 	$('#modal').modal('open');
 }
 
-// start a new purchase
+// execute the transfer
 function buy() {
-	var code = $('#code').val();
-
-	// execute the transfer
 	apretaste.send({
-		command: "CREDITO PURCHASE", 
-		data: {'item': code},
+		command: "RIFA PAY", 
+		data: {'code': currentCode},
 		redirect: true
 	});
 }

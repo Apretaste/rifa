@@ -19,11 +19,16 @@ class Service
 		// show notice if there is no open raffle
 		if (empty($raffle)) {
 			$response->setCache("300");
-			return $response->setTemplate('message.ejs');
+			return $response->setTemplate('message.ejs', [
+				"header"=>"No hay rifas abiertas",
+				"icon"=>"sentiment_very_dissatisfied",
+				"text" => "Lo sentimos, no hay ninguna Rifa abierta ahora mismo. Pruebe nuevamente en algunos días.",
+				"button" => ["href"=>"RIFA GANADORES", "caption"=>"Ver ganadores"]
+			]);
 		}
-		$raffle = $raffle[0];
 
 		// get the image of the raffle
+		$raffle = $raffle[0];
 		$di = FactoryDefault::getDefault();
 		$image = $di->get('path')['root']."/public/raffle/".md5($raffle->raffle_id).".jpg";
 		$raffle->image = basename($image);
@@ -96,5 +101,55 @@ class Service
 		// create the final user Response
 		$response->setCache($minsUntilMonthEnd);
 		$response->setTemplate("winners.ejs", ["winners" => $raffles], $images);
+	}
+
+	/**
+	 * Pay for an item and add the items to the database
+	 *
+	 * @param Request
+	 * @param Response
+	 * @throws Exception
+	 */
+	public function _pay(Request $request, Response $response)
+	{
+		// get the amulet to purchase
+		$code = $request->input->data->code;
+		$isError = false;
+
+		// check the code exists
+		$codes = ['1TICKET' => 1, '5TICKETS' => 5, '10TICKETS' => 10];
+		if(!isset($codes[$code])) $isError = true;
+
+		// process the payment
+		try {
+			MoneyNew::buy($request->person->id, $code);
+		} catch (Exception $e) { $isError = true; }
+
+		// message if errors were found
+		if($isError) {
+			return $response->setTemplate('message.ejs', [
+				"header"=>"Error inesperado",
+				"icon"=>"sentiment_very_dissatisfied",
+				"text" => "Hemos encontrado un error procesando su canje. Por favor intente nuevamente, si el problema persiste, escríbanos al soporte.",
+				"button" => ["href"=>"RIFA TICKETS", "caption"=>"Reintentar"]
+			]);
+		}
+
+		// create SQL to add the tickets
+		$vals = [];
+		for ($i=0; $i<$codes[$code]; $i++) $vals[] = "('PURCHASE','{$request->person->id}')";
+		$sql = implode(",", $vals);
+
+		// add tickets to the database
+		Connection::query("INSERT INTO ticket (origin,person_id) VALUES $sql;");
+
+		// possitive response (with seed to avoid cache)
+		$seed = date('Hms') . rand(100, 999);
+		return $response->setTemplate('message.ejs', [  
+			"header"=>"Canje realizado",
+			"icon"=>"sentiment_very_satisfied",
+			"text" => "Su canje se ha realizado satisfactoriamente. Usted ha recibido {$codes[$code]} ticket(s) para la rifa en curso. ¡Buena suerte!",
+			"button" => ["href"=>"RIFA $seed", "caption"=>"Ver rifa"]
+		]);
 	}
 }
