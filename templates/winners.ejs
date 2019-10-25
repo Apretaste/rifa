@@ -2,31 +2,31 @@
 	<div class="col s12">
 		<ul class="tabs tabs-fixed-width">
 			<li class="tab"><a href="#" onclick="apretaste.send({command: 'RIFA'})">Rifa Actual</a></li>
-			<li class="tab"><a href="#" onclick="apretaste.send({command: 'RIFA TICKETS'})">Tickets</a></li> 
-			<li class="tab"><a href="#" class="active">Ganadores</a></li> 
+			<li class="tab"><a href="#" onclick="apretaste.send({command: 'RIFA TICKETS'})">Tickets</a></li>
+			<li class="tab"><a href="#" class="active">Ganadores</a></li>
 		</ul>
 
 		<% winners.forEach(function(w){ %>
 			<h2><%= formatDateText(w.start_date) %></h2>
 			<ul class="collection">
 				<li class="collection-item avatar">
-					<% if(w.winner_1.picture) var src="{{APP_IMAGE_PATH}}" + w.winner_1.picture;
-					else var src="{{APP_RESOURCES}}/images/user.jpg"; %>
-					<img class="circle" src="<%= src %>" alt="<%= w.winner_1.username %>"/>
+					<div class="circle"
+						 style="<%= getAvatar(w.winner_1.avatar, "{{APP_SERVICE_PATH}}/images", 42) %> background-color: <%= colors[w.winner_1.avatarColor] %>;">
+					</div>
 					<span class="title orange-text"><b>@<%= w.winner_1.username %></b></span>
 					<p>Ganó el primer lugar de la rifa.</p>
 				</li>
 				<li class="collection-item avatar">
-					<% if(w.winner_2.picture) var src="{{APP_IMAGE_PATH}}" + w.winner_2.picture;
-					else var src="{{APP_RESOURCES}}/images/user.jpg"; %>
-					<img class="circle" src="<%= src %>" alt="<%= w.winner_2.username %>"/>
+					<div class="circle"
+						 style="<%= getAvatar(w.winner_2.avatar, "{{APP_SERVICE_PATH}}/images", 42) %> background-color: <%= colors[w.winner_2.avatarColor] %>;">
+					</div>
 					<span class="title grey-text"><b>@<%= w.winner_2.username %></b></span>
 					<p>Ganó el segundo lugar de la rifa.</p>
 				</li>
 				<li class="collection-item avatar">
-					<% if(w.winner_3.picture) var src="{{APP_IMAGE_PATH}}" + w.winner_3.picture;
-					else var src="{{APP_RESOURCES}}/images/user.jpg"; %>
-					<img class="circle" src="<%= src %>" alt="<%= w.winner_3.username %>"/>
+					<div class="circle"
+						 style="<%= getAvatar(w.winner_3.avatar, "{{APP_SERVICE_PATH}}/images", 42) %> background-color: <%= colors[w.winner_3.avatarColor] %>;">
+					</div>
 					<span class="title brown-text"><b>@<%= w.winner_3.username %></b></span>
 					<p>Ganó el tercer lugar de la rifa.</p>
 				</li>
