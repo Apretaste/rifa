@@ -143,6 +143,9 @@ class Service
 		// add tickets to the database
 		Connection::query("INSERT INTO ticket (origin,person_id) VALUES $sql;");
 
+		// add the experience
+		Level::setExperience('RAFFLE_BUY_FIRST_TICKET', $request->person->id);
+
 		// possitive response (with seed to avoid cache)
 		$seed = date('Hms') . rand(100, 999);
 		return $response->setTemplate('message.ejs', [  
