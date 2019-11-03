@@ -123,6 +123,9 @@ class Service
 		// process the payment
 		try {
 			MoneyNew::buy($request->person->id, $code);
+
+			Challenges::complete("buy-raffle-tickets", $request->person->id);
+
 		} catch (Exception $e) { $isError = true; }
 
 		// message if errors were found
@@ -148,7 +151,7 @@ class Service
 
 		// possitive response (with seed to avoid cache)
 		$seed = date('Hms') . rand(100, 999);
-		return $response->setTemplate('message.ejs', [  
+		return $response->setTemplate('message.ejs', [
 			"header"=>"Canje realizado",
 			"icon"=>"sentiment_very_satisfied",
 			"text" => "Su canje se ha realizado satisfactoriamente. Usted ha recibido {$codes[$code]} ticket(s) para la rifa en curso. ¡Buena suerte!",
