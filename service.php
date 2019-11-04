@@ -89,9 +89,15 @@ class Service
 			$raffle->winner_3 = Social::prepareUserProfile(Utils::getPerson($raffle->winner_3));
 
 			// get images
-			if ($raffle->winner_1->picture) $images[] = $raffle->winner_1->picture;
-			if ($raffle->winner_2->picture) $images[] = $raffle->winner_2->picture;
-			if ($raffle->winner_3->picture) $images[] = $raffle->winner_3->picture;
+			if ($raffle->winner_1->picture) {
+				$images[] = $raffle->winner_1->picture;
+			}
+			if ($raffle->winner_2->picture) {
+				$images[] = $raffle->winner_2->picture;
+			}
+			if ($raffle->winner_3->picture) {
+				$images[] = $raffle->winner_3->picture;
+			}
 		}
 
 		// calculate minutes till the end of raffle
@@ -118,18 +124,22 @@ class Service
 
 		// check the code exists
 		$codes = ['1TICKET' => 1, '5TICKETS' => 5, '10TICKETS' => 10];
-		if(!isset($codes[$code])) $isError = true;
+		if (!isset($codes[$code])) {
+			$isError = true;
+		}
 
 		// process the payment
 		try {
 			MoneyNew::buy($request->person->id, $code);
 
 			Challenges::complete("buy-raffle-tickets", $request->person->id);
-
-		} catch (Exception $e) { $isError = true; }
+		} catch (Exception $e) {
+			Utils::createAlert("RIFA: ".$e->getMessage());
+			$isError = true;
+		}
 
 		// message if errors were found
-		if($isError) {
+		if ($isError) {
 			return $response->setTemplate('message.ejs', [
 				"header"=>"Error inesperado",
 				"icon"=>"sentiment_very_dissatisfied",
@@ -140,7 +150,9 @@ class Service
 
 		// create SQL to add the tickets
 		$vals = [];
-		for ($i=0; $i<$codes[$code]; $i++) $vals[] = "('PURCHASE','{$request->person->id}')";
+		for ($i=0; $i<$codes[$code]; $i++) {
+			$vals[] = "('PURCHASE','{$request->person->id}')";
+		}
 		$sql = implode(",", $vals);
 
 		// add tickets to the database
