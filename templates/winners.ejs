@@ -7,27 +7,21 @@
 		</ul>
 
 		<% winners.forEach(function(w){ %>
-			<h2><%= formatDateText(w.start_date) %></h2>
+			<h2><%= formatDateText(w.startDate) %></h2>
 			<ul class="collection">
 				<li class="collection-item avatar">
-					<div class="circle"
-						 style="<%= getAvatar(w.winner_1.avatar, "{{APP_SERVICE_PATH}}/images", 42) %> background-color: <%= colors[w.winner_1.avatarColor] %>;">
-					</div>
-					<span class="title orange-text"><b>@<%= w.winner_1.username %></b></span>
+					<div class="person-avatar circle" face="<%= w.w1Avatar %>" color="<%= w.w1AvatarColor %>" size="42"></div>
+					<span class="title orange-text"><b>@<%= w.w1Username %></b></span>
 					<p>Ganó el primer lugar de la rifa.</p>
 				</li>
 				<li class="collection-item avatar">
-					<div class="circle"
-						 style="<%= getAvatar(w.winner_2.avatar, "{{APP_SERVICE_PATH}}/images", 42) %> background-color: <%= colors[w.winner_2.avatarColor] %>;">
-					</div>
-					<span class="title grey-text"><b>@<%= w.winner_2.username %></b></span>
+					<div class="person-avatar circle" face="<%= w.w2Avatar %>" color="<%= w.w2AvatarColor %>" size="42"></div>
+					<span class="title grey-text"><b>@<%= w.w2Username %></b></span>
 					<p>Ganó el segundo lugar de la rifa.</p>
 				</li>
 				<li class="collection-item avatar">
-					<div class="circle"
-						 style="<%= getAvatar(w.winner_3.avatar, "{{APP_SERVICE_PATH}}/images", 42) %> background-color: <%= colors[w.winner_3.avatarColor] %>;">
-					</div>
-					<span class="title brown-text"><b>@<%= w.winner_3.username %></b></span>
+					<div class="person-avatar circle" face="<%= w.w3Avatar %>" color="<%= w.w3AvatarColor %>" size="42"></div>
+					<span class="title brown-text"><b>@<%= w.w3Username %></b></span>
 					<p>Ganó el tercer lugar de la rifa.</p>
 				</li>
 			</ul>

@@ -85,12 +85,33 @@ class Service
 			ORDER BY start_date DESC
 			LIMIT 6");
 
-		$images = [];
+		// create content to send to the view
+		$winners = [];
 		foreach ($raffles as $raffle) {
-			// get username
-			$raffle->winner_1 = Person::find($raffle->winner_1);
-			$raffle->winner_2 = Person::find($raffle->winner_2);
-			$raffle->winner_3 = Person::find($raffle->winner_3);
+			// create the item for the content
+			$item = new \stdClass();
+			$item->startDate = $raffle->start_date;
+
+			// get winner #1 details
+			$winner1 = Person::find($raffle->winner_1);
+			$item->w1Username = $winner1->username;
+			$item->w1Avatar = $winner1->avatar;
+			$item->w1AvatarColor = $winner1->avatarColor;
+
+			// get winner #2 details
+			$winner2 = Person::find($raffle->winner_2);
+			$item->w2Username = $winner2->username;
+			$item->w2Avatar = $winner2->avatar;
+			$item->w2AvatarColor = $winner2->avatarColor;
+
+			// get winner #3 details
+			$winner3 = Person::find($raffle->winner_3);
+			$item->w3Username = $winner3->username;
+			$item->w3Avatar = $winner3->avatar;
+			$item->w3AvatarColor = $winner3->avatarColor;
+
+			// add to the content
+			$winners[] = $item;
 		}
 
 		// calculate minutes till the end of raffle
@@ -99,7 +120,7 @@ class Service
 
 		// create the final user Response
 		$response->setCache($minsUntilMonthEnd);
-		$response->setTemplate("winners.ejs", ["winners" => $raffles], $images);
+		$response->setTemplate("winners.ejs", ["winners"=>$winners]);
 	}
 
 	/**
