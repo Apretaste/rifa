@@ -2,35 +2,35 @@
 
 use Phalcon\DI\FactoryDefault;
 
-class Service
-{
+class Service {
 	/**
 	 * Get the current raffle
 	 *
-	 * @author salvipascual
 	 * @param Request  $request
 	 * @param Response $response
+	 *
+	 * @author salvipascual
 	 */
-	public function _main(Request $request, Response $response)
-	{
+	public function _main(Request $request, Response $response) {
 		// get the current raffle
 		$raffle = Connection::query("SELECT * FROM raffle WHERE CURRENT_TIMESTAMP BETWEEN start_date AND end_date");
 
 		// show notice if there is no open raffle
 		if (empty($raffle)) {
 			$response->setCache("300");
+
 			return $response->setTemplate('message.ejs', [
-				"header"=>"No hay rifas abiertas",
-				"icon"=>"sentiment_very_dissatisfied",
-				"text" => "Lo sentimos, no hay ninguna Rifa abierta ahora mismo. Pruebe nuevamente en algunos días.",
-				"button" => ["href"=>"RIFA GANADORES", "caption"=>"Ver ganadores"]
+				"header" => "No hay rifas abiertas",
+				"icon"   => "sentiment_very_dissatisfied",
+				"text"   => "Lo sentimos, no hay ninguna Rifa abierta ahora mismo. Pruebe nuevamente en algunos días.",
+				"button" => ["href" => "RIFA GANADORES", "caption" => "Ver ganadores"]
 			]);
 		}
 
 		// get the image of the raffle
 		$raffle = $raffle[0];
 		$di = FactoryDefault::getDefault();
-		$image = $di->get('path')['root']."/public/raffle/".md5($raffle->raffle_id).".jpg";
+		$image = $di->get('path')['root']."/shared/img/raffle/".md5($raffle->raffle_id).".jpg";
 		$raffle->image = basename($image);
 
 		// get number of tickets adquired by the user
@@ -50,12 +50,12 @@ class Service
 	/**
 	 * Sell tickets for the raffle
 	 *
-	 * @author salvipascual
 	 * @param Request  $request
 	 * @param Response $response
+	 *
+	 * @author salvipascual
 	 */
-	public function _tickets(Request $request, Response $response)
-	{
+	public function _tickets(Request $request, Response $response) {
 		// create content structure
 		$content = ["credit" => $request->person->credit];
 
@@ -67,12 +67,12 @@ class Service
 	/**
 	 * Display the list of winners
 	 *
-	 * @author salvipascual
 	 * @param Request  $request
 	 * @param Response $response
+	 *
+	 * @author salvipascual
 	 */
-	public function _ganadores(Request $request, Response $response)
-	{
+	public function _ganadores(Request $request, Response $response) {
 		// get all raffles
 		$raffles = Connection::query("
 			SELECT start_date, winner_1, winner_2, winner_3
@@ -114,10 +114,10 @@ class Service
 	 *
 	 * @param Request
 	 * @param Response
+	 *
 	 * @throws Exception
 	 */
-	public function _pay(Request $request, Response $response)
-	{
+	public function _pay(Request $request, Response $response) {
 		// get the amulet to purchase
 		$code = $request->input->data->code;
 		$isError = false;
@@ -141,16 +141,16 @@ class Service
 		// message if errors were found
 		if ($isError) {
 			return $response->setTemplate('message.ejs', [
-				"header"=>"Error inesperado",
-				"icon"=>"sentiment_very_dissatisfied",
-				"text" => "Hemos encontrado un error procesando su canje. Por favor intente nuevamente, si el problema persiste, escríbanos al soporte.",
-				"button" => ["href"=>"RIFA TICKETS", "caption"=>"Reintentar"]
+				"header" => "Error inesperado",
+				"icon"   => "sentiment_very_dissatisfied",
+				"text"   => "Hemos encontrado un error procesando su canje. Por favor intente nuevamente, si el problema persiste, escríbanos al soporte.",
+				"button" => ["href" => "RIFA TICKETS", "caption" => "Reintentar"]
 			]);
 		}
 
 		// create SQL to add the tickets
 		$vals = [];
-		for ($i=0; $i<$codes[$code]; $i++) {
+		for ($i = 0; $i < $codes[$code]; $i++) {
 			$vals[] = "('PURCHASE','{$request->person->id}')";
 		}
 		$sql = implode(",", $vals);
@@ -162,12 +162,13 @@ class Service
 		Level::setExperience('RAFFLE_BUY_FIRST_TICKET', $request->person->id);
 
 		// possitive response (with seed to avoid cache)
-		$seed = date('Hms') . rand(100, 999);
+		$seed = date('Hms').rand(100, 999);
+
 		return $response->setTemplate('message.ejs', [
-			"header"=>"Canje realizado",
-			"icon"=>"sentiment_very_satisfied",
-			"text" => "Su canje se ha realizado satisfactoriamente. Usted ha recibido {$codes[$code]} ticket(s) para la rifa en curso. ¡Buena suerte!",
-			"button" => ["href"=>"RIFA $seed", "caption"=>"Ver rifa"]
+			"header" => "Canje realizado",
+			"icon"   => "sentiment_very_satisfied",
+			"text"   => "Su canje se ha realizado satisfactoriamente. Usted ha recibido {$codes[$code]} ticket(s) para la rifa en curso. ¡Buena suerte!",
+			"button" => ["href" => "RIFA $seed", "caption" => "Ver rifa"]
 		]);
 	}
 }
