@@ -75,7 +75,10 @@ class Service {
 	public function _ganadores(Request $request, Response $response) {
 		// get all raffles
 		$raffles = Connection::query("
-			SELECT start_date, winner_1, winner_2, winner_3
+			SELECT start_date, 
+			       (select email from person where person.id = raffle.winner1) as winner_1, 
+			       (select email from person where person.id = raffle.winner2) as winner_2,
+			       (select email from person where person.id = raffle.winner3) as winner_3
 			FROM raffle
 			WHERE winner_1 <> ''
 			ORDER BY start_date DESC
