@@ -1,5 +1,6 @@
 <?php
 
+use Apretaste\Challenges;
 use Apretaste\Request;
 use Apretaste\Response;
 use Framework\Database;
@@ -10,11 +11,13 @@ class Service
 	/**
 	 * Get the current raffle
 	 *
-	 * @author salvipascual
 	 * @param Request  $request
 	 * @param Response $response
+	 *
+	 * @throws \Framework\Alert
+	 * @author salvipascual
 	 */
-	public function _main(Request $request, Response $response)
+	public function _main(Request $request, Response &$response)
 	{
 		// get the current raffle
 		$raffle = Database::query("SELECT * FROM raffle WHERE CURRENT_TIMESTAMP BETWEEN start_date AND end_date");
@@ -22,12 +25,13 @@ class Service
 		// show notice if there is no open raffle
 		if (empty($raffle)) {
 			$response->setCache("300");
-			return $response->setTemplate('message.ejs', [
+			$response->setTemplate('message.ejs', [
 				"header"=>"No hay rifas abiertas",
 				"icon"=>"sentiment_very_dissatisfied",
 				"text" => "Lo sentimos, no hay ninguna Rifa abierta ahora mismo. Pruebe nuevamente en algunos días.",
 				"button" => ["href"=>"RIFA GANADORES", "caption"=>"Ver ganadores"]
 			]);
+			return;
 		}
 
 		// get the image of the raffle
@@ -54,11 +58,13 @@ class Service
 	/**
 	 * Sell tickets for the raffle
 	 *
-	 * @author salvipascual
 	 * @param Request  $request
 	 * @param Response $response
+	 *
+	 * @throws \Framework\Alert
+	 * @author salvipascual
 	 */
-	public function _tickets(Request $request, Response $response)
+	public function _tickets(Request $request, Response &$response)
 	{
 		// create content structure
 		$content = ["credit" => $request->person->credit];
@@ -71,15 +77,20 @@ class Service
 	/**
 	 * Display the list of winners
 	 *
-	 * @author salvipascual
 	 * @param Request  $request
 	 * @param Response $response
+	 *
+	 * @throws \Framework\Alert
+	 * @author salvipascual
 	 */
-	public function _ganadores(Request $request, Response $response)
+	public function _ganadores(Request $request, Response &$response)
 	{
 		// get all raffles
 		$raffles = Database::query("
-			SELECT start_date, winner_1, winner_2, winner_3
+			SELECT start_date, 
+			       (select email from person where person.id = raffle.winner1) as winner_1, 
+			       (select email from person where person.id = raffle.winner2) as winner_2,
+			       (select email from person where person.id = raffle.winner3) as winner_3
 			FROM raffle
 			WHERE winner_1 <> ''
 			ORDER BY start_date DESC
@@ -130,7 +141,7 @@ class Service
 	 * @param Response
 	 * @throws Exception
 	 */
-	public function _pay(Request $request, Response $response)
+	public function _pay(Request $request, Response &$response)
 	{
 		// get the amulet to purchase
 		$code = $request->input->data->code;
@@ -154,12 +165,13 @@ class Service
 
 		// message if errors were found
 		if ($isError) {
-			return $response->setTemplate('message.ejs', [
+			$response->setTemplate('message.ejs', [
 				"header"=>"Error inesperado",
 				"icon"=>"sentiment_very_dissatisfied",
 				"text" => "Hemos encontrado un error procesando su canje. Por favor intente nuevamente, si el problema persiste, escríbanos al soporte.",
 				"button" => ["href"=>"RIFA TICKETS", "caption"=>"Reintentar"]
 			]);
+			return;
 		}
 
 		// create SQL to add the tickets
@@ -177,11 +189,12 @@ class Service
 
 		// possitive response (with seed to avoid cache)
 		$seed = date('Hms') . rand(100, 999);
-		return $response->setTemplate('message.ejs', [
+		$response->setTemplate('message.ejs', [
 			"header"=>"Canje realizado",
 			"icon"=>"sentiment_very_satisfied",
 			"text" => "Su canje se ha realizado satisfactoriamente. Usted ha recibido {$codes[$code]} ticket(s) para la rifa en curso. ¡Buena suerte!",
 			"button" => ["href"=>"RIFA $seed", "caption"=>"Ver rifa"]
 		]);
+		return;
 	}
 }
