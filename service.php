@@ -2,16 +2,19 @@
 
 use Phalcon\DI\FactoryDefault;
 
-class Service {
+class Service
+{
 	/**
 	 * Get the current raffle
 	 *
-	 * @param Request  $request
+	 * @param Request $request
 	 * @param Response $response
 	 *
+	 * @return Response
 	 * @author salvipascual
 	 */
-	public function _main(Request $request, Response $response) {
+	public function _main(Request $request, Response $response)
+	{
 		// get the current raffle
 		$raffle = Connection::query("SELECT * FROM raffle WHERE CURRENT_TIMESTAMP BETWEEN start_date AND end_date");
 
@@ -21,8 +24,8 @@ class Service {
 
 			return $response->setTemplate('message.ejs', [
 				"header" => "No hay rifas abiertas",
-				"icon"   => "sentiment_very_dissatisfied",
-				"text"   => "Lo sentimos, no hay ninguna Rifa abierta ahora mismo. Pruebe nuevamente en algunos días.",
+				"icon" => "sentiment_very_dissatisfied",
+				"text" => "Lo sentimos, no hay ninguna Rifa abierta ahora mismo. Pruebe nuevamente en algunos días.",
 				"button" => ["href" => "RIFA GANADORES", "caption" => "Ver ganadores"]
 			]);
 		}
@@ -30,12 +33,12 @@ class Service {
 		// get the image of the raffle
 		$raffle = $raffle[0];
 		$di = FactoryDefault::getDefault();
-		$image = $di->get('path')['root']."/shared/img/raffle/".md5($raffle->raffle_id).".jpg";
+		$image = $di->get('path')['root'] . "/shared/img/raffle/" . md5($raffle->raffle_id) . ".jpg";
 		$raffle->image = basename($image);
 
 		// get number of tickets adquired by the user
 		$userTickets = Connection::query("SELECT COUNT(ticket_id) AS tickets FROM ticket WHERE raffle_id is NULL AND person_id = '{$request->person->id}'");
-		$raffle->tickets = (int) $userTickets[0]->tickets;
+		$raffle->tickets = (int)$userTickets[0]->tickets;
 
 		// calculate minutes till the end of raffle
 		$monthEnd = strtotime(date("Y-m-t 23:59:59"));
@@ -50,12 +53,13 @@ class Service {
 	/**
 	 * Sell tickets for the raffle
 	 *
-	 * @param Request  $request
+	 * @param Request $request
 	 * @param Response $response
 	 *
 	 * @author salvipascual
 	 */
-	public function _tickets(Request $request, Response $response) {
+	public function _tickets(Request $request, Response $response)
+	{
 		// create content structure
 		$content = ["credit" => $request->person->credit];
 
@@ -67,12 +71,13 @@ class Service {
 	/**
 	 * Display the list of winners
 	 *
-	 * @param Request  $request
+	 * @param Request $request
 	 * @param Response $response
 	 *
 	 * @author salvipascual
 	 */
-	public function _ganadores(Request $request, Response $response) {
+	public function _ganadores(Request $request, Response $response)
+	{
 		// get all raffles
 		$raffles = Connection::query("
 			SELECT start_date, 
@@ -85,22 +90,20 @@ class Service {
 			LIMIT 6");
 
 		$images = [];
+		$serviceImgPath = Utils::getPathToService($response->serviceName) . "/images";
 		foreach ($raffles as $raffle) {
 			// get username
 			$raffle->winner_1 = Social::prepareUserProfile(Utils::getPerson($raffle->winner_1));
 			$raffle->winner_2 = Social::prepareUserProfile(Utils::getPerson($raffle->winner_2));
 			$raffle->winner_3 = Social::prepareUserProfile(Utils::getPerson($raffle->winner_3));
 
-			// get images
-			if ($raffle->winner_1->picture) {
-				$images[] = $raffle->winner_1->picture;
-			}
-			if ($raffle->winner_2->picture) {
-				$images[] = $raffle->winner_2->picture;
-			}
-			if ($raffle->winner_3->picture) {
-				$images[] = $raffle->winner_3->picture;
-			}
+			// get avatars
+			if (!empty($raffle->winner_1->avatar)) $images[] = "$serviceImgPath/{$raffle->winner_1->avatar}.png";
+			else $images[] = "$serviceImgPath/hombre.png";
+			if (!empty($raffle->winner_2->avatar)) $images[] = "$serviceImgPath/{$raffle->winner_2->avatar}.png";
+			else $images[] = "$serviceImgPath/hombre.png";
+			if (!empty($raffle->winner_3->avatar)) $images[] = "$serviceImgPath/{$raffle->winner_3->avatar}.png";
+			else $images[] = "$serviceImgPath/hombre.png";
 		}
 
 		// calculate minutes till the end of raffle
@@ -118,9 +121,11 @@ class Service {
 	 * @param Request
 	 * @param Response
 	 *
+	 * @return Response
 	 * @throws Exception
 	 */
-	public function _pay(Request $request, Response $response) {
+	public function _pay(Request $request, Response $response)
+	{
 		// get the amulet to purchase
 		$code = $request->input->data->code;
 		$isError = false;
@@ -137,7 +142,7 @@ class Service {
 
 			Challenges::complete("buy-raffle-tickets", $request->person->id);
 		} catch (Exception $e) {
-			Utils::createAlert("RIFA: ".$e->getMessage());
+			Utils::createAlert("RIFA: " . $e->getMessage());
 			$isError = true;
 		}
 
@@ -145,8 +150,8 @@ class Service {
 		if ($isError) {
 			return $response->setTemplate('message.ejs', [
 				"header" => "Error inesperado",
-				"icon"   => "sentiment_very_dissatisfied",
-				"text"   => "Hemos encontrado un error procesando su canje. Por favor intente nuevamente, si el problema persiste, escríbanos al soporte.",
+				"icon" => "sentiment_very_dissatisfied",
+				"text" => "Hemos encontrado un error procesando su canje. Por favor intente nuevamente, si el problema persiste, escríbanos al soporte.",
 				"button" => ["href" => "RIFA TICKETS", "caption" => "Reintentar"]
 			]);
 		}
@@ -165,12 +170,12 @@ class Service {
 		Level::setExperience('RAFFLE_BUY_FIRST_TICKET', $request->person->id);
 
 		// possitive response (with seed to avoid cache)
-		$seed = date('Hms').rand(100, 999);
+		$seed = date('Hms') . rand(100, 999);
 
 		return $response->setTemplate('message.ejs', [
 			"header" => "Canje realizado",
-			"icon"   => "sentiment_very_satisfied",
-			"text"   => "Su canje se ha realizado satisfactoriamente. Usted ha recibido {$codes[$code]} ticket(s) para la rifa en curso. ¡Buena suerte!",
+			"icon" => "sentiment_very_satisfied",
+			"text" => "Su canje se ha realizado satisfactoriamente. Usted ha recibido {$codes[$code]} ticket(s) para la rifa en curso. ¡Buena suerte!",
 			"button" => ["href" => "RIFA $seed", "caption" => "Ver rifa"]
 		]);
 	}
