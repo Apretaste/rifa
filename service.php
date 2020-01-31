@@ -156,7 +156,7 @@ class Service
 
 		// process the payment
 		try {
-			Money::buy($request->person->id, $code);
+			Money::purchase($request->person->id, $code);
 
 			Challenges::complete("buy-raffle-tickets", $request->person->id);
 		} catch (Exception $e) {
