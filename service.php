@@ -1,6 +1,7 @@
 <?php
 
 use Apretaste\Challenges;
+use Apretaste\Money;
 use Apretaste\Request;
 use Apretaste\Response;
 use Framework\Database;
@@ -155,7 +156,7 @@ class Service
 
 		// process the payment
 		try {
-			MoneyNew::buy($request->person->id, $code);
+			Money::buy($request->person->id, $code);
 
 			Challenges::complete("buy-raffle-tickets", $request->person->id);
 		} catch (Exception $e) {
