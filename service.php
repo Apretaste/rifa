@@ -6,6 +6,7 @@ use Apretaste\Request;
 use Apretaste\Response;
 use Framework\Database;
 use Apretaste\Person;
+use Apretaste\Level;
 
 class Service
 {
