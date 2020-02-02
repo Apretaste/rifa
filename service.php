@@ -80,7 +80,7 @@ class Service {
 			       (select email from person where person.id = raffle.winner2) as winner_2,
 			       (select email from person where person.id = raffle.winner3) as winner_3
 			FROM raffle
-			WHERE winner_1 <> ''
+			WHERE winner1 <> ''
 			ORDER BY start_date DESC
 			LIMIT 6");
 
