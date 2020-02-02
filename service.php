@@ -99,11 +99,21 @@ class Service
 
 			// get avatars
 			if (!empty($raffle->winner_1->avatar)) $images[] = "$serviceImgPath/{$raffle->winner_1->avatar}.png";
-			else $images[] = "$serviceImgPath/hombre.png";
+			else {
+				$raffle->winner_1->avatar = "hombre";
+				$images[] = "$serviceImgPath/hombre.png";
+			}
 			if (!empty($raffle->winner_2->avatar)) $images[] = "$serviceImgPath/{$raffle->winner_2->avatar}.png";
-			else $images[] = "$serviceImgPath/hombre.png";
+			else {
+				$raffle->winner_2->avatar = "hombre";
+				$images[] = "$serviceImgPath/hombre.png";
+			}
+
 			if (!empty($raffle->winner_3->avatar)) $images[] = "$serviceImgPath/{$raffle->winner_3->avatar}.png";
-			else $images[] = "$serviceImgPath/hombre.png";
+			else {
+				$raffle->winner_3->avatar = "hombre";
+				$images[] = "$serviceImgPath/hombre.png";
+			}
 		}
 
 		// calculate minutes till the end of raffle
