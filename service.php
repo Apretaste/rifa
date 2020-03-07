@@ -4,6 +4,7 @@ use Apretaste\Challenges;
 use Apretaste\Money;
 use Apretaste\Request;
 use Apretaste\Response;
+use Framework\Alert;
 use Framework\Database;
 use Apretaste\Person;
 use Apretaste\Level;
@@ -22,23 +23,23 @@ class Service
 	public function _main(Request $request, Response &$response)
 	{
 		// get the current raffle
-		$raffle = Database::query("SELECT * FROM raffle WHERE CURRENT_TIMESTAMP BETWEEN start_date AND end_date");
+		$raffle = Database::query('SELECT * FROM raffle WHERE CURRENT_TIMESTAMP BETWEEN start_date AND end_date');
 
 		// show notice if there is no open raffle
 		if (empty($raffle)) {
-			$response->setCache("300");
+			$response->setCache('300');
 			$response->setTemplate('message.ejs', [
-				"header" => "No hay rifas abiertas",
-				"icon" => "sentiment_very_dissatisfied",
-				"text" => "Lo sentimos, no hay ninguna Rifa abierta ahora mismo. Pruebe nuevamente en algunos días.",
-				"button" => ["href" => "RIFA GANADORES", "caption" => "Ver ganadores"]
+				'header' => 'No hay rifas abiertas',
+				'icon' => 'sentiment_very_dissatisfied',
+				'text' => 'Lo sentimos, no hay ninguna Rifa abierta ahora mismo. Pruebe nuevamente en algunos días.',
+				'button' => ['href' => 'RIFA GANADORES', 'caption' => 'Ver ganadores']
 			]);
 			return;
 		}
 
 		// get the image of the raffle
 		$raffle = $raffle[0];
-		$image = IMG_PATH . "raffle/" . md5($raffle->raffle_id) . ".jpg";
+		$image = IMG_PATH.'raffle/'.md5($raffle->raffle_id).'.jpg';
 		$raffle->image = basename($image);
 
 		// get number of tickets adquired by the user
@@ -46,15 +47,15 @@ class Service
 		$raffle->tickets = (int) $userTickets[0]->tickets;
 
 		// calculate minutes till the end of raffle
-		$monthEnd = strtotime(date("Y-m-t 23:59:59"));
+		$monthEnd = strtotime(date('Y-m-t 23:59:59'));
 		$minsUntilMonthEnd = ceil(($monthEnd - time()) / 60);
 
 		// data to send to the view
-		$content = ["raffle" => $raffle, "credit" => $request->person->credit];
+		$content = ['raffle' => $raffle, 'credit' => $request->person->credit];
 
 		// create the user Response
 		$response->setCache($minsUntilMonthEnd);
-		$response->setTemplate("home.ejs", $content, [$image]);
+		$response->setTemplate('home.ejs', $content, [$image]);
 	}
 
 	/**
@@ -69,11 +70,11 @@ class Service
 	public function _tickets(Request $request, Response &$response)
 	{
 		// create content structure
-		$content = ["credit" => $request->person->credit];
+		$content = ['credit' => $request->person->credit];
 
 		// create the user Response
-		$response->setCache("year");
-		$response->setTemplate("tickets.ejs", $content);
+		$response->setCache('year');
+		$response->setTemplate('tickets.ejs', $content);
 	}
 
 	/**
@@ -128,12 +129,12 @@ class Service
 		}
 
 		// calculate minutes till the end of raffle
-		$monthEnd = strtotime(date("Y-m-t 23:59:59"));
+		$monthEnd = strtotime(date('Y-m-t 23:59:59'));
 		$minsUntilMonthEnd = ceil(($monthEnd - time()) / 60);
 
 		// create the final user Response
 		$response->setCache($minsUntilMonthEnd);
-		$response->setTemplate("winners.ejs", ["winners" => $winners]);
+		$response->setTemplate('winners.ejs', ['winners' => $winners]);
 	}
 
 	/**
@@ -159,20 +160,16 @@ class Service
 		try {
 			Money::purchase($request->person->id, $code);
 
-			Challenges::complete("buy-raffle-tickets", $request->person->id);
+			Challenges::complete('buy-raffle-tickets', $request->person->id);
 		} catch (Exception $e) {
-			Utils::createAlert("RIFA: ".$e->getMessage());
-			$isError = true;
-		}
-
-		// message if errors were found
-		if ($isError) {
 			$response->setTemplate('message.ejs', [
-				"header" => "Error inesperado",
-				"icon" => "sentiment_very_dissatisfied",
-				"text" => "Hemos encontrado un error procesando su canje. Por favor intente nuevamente, si el problema persiste, escríbanos al soporte.",
-				"button" => ["href" => "RIFA TICKETS", "caption" => "Reintentar"]
+			  'header' => 'Error inesperado',
+			  'icon' => 'sentiment_very_dissatisfied',
+			  'text' => 'Hemos encontrado un error procesando su canje. Por favor intente nuevamente, si el problema persiste, escríbanos al soporte.',
+			  'button' => ['href' => 'RIFA TICKETS', 'caption' => 'Reintentar']
 			]);
+
+			(new Alert('RIFA: '.$e->getMessage()))->post();
 			return;
 		}
 
@@ -181,7 +178,7 @@ class Service
 		for ($i = 0; $i < $codes[$code]; $i++) {
 			$vals[] = "('PURCHASE','{$request->person->id}')";
 		}
-		$sql = implode(",", $vals);
+		$sql = implode(',', $vals);
 
 		// add tickets to the database
 		Database::query("INSERT INTO ticket (origin,person_id) VALUES $sql;");
@@ -192,10 +189,10 @@ class Service
 		// possitive response (with seed to avoid cache)
 		$seed = date('Hms') . rand(100, 999);
 		$response->setTemplate('message.ejs', [
-			"header" => "Canje realizado",
-			"icon" => "sentiment_very_satisfied",
-			"text" => "Su canje se ha realizado satisfactoriamente. Usted ha recibido {$codes[$code]} ticket(s) para la rifa en curso. ¡Buena suerte!",
-			"button" => ["href" => "RIFA $seed", "caption" => "Ver rifa"]
+			'header' => 'Canje realizado',
+			'icon' => 'sentiment_very_satisfied',
+			'text' => "Su canje se ha realizado satisfactoriamente. Usted ha recibido {$codes[$code]} ticket(s) para la rifa en curso. ¡Buena suerte!",
+			'button' => ['href' => "RIFA $seed", 'caption' => 'Ver rifa']
 		]);
 		return;
 	}
