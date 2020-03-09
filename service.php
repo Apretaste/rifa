@@ -11,7 +11,7 @@ class Service
 	 * Get the current raffle
 	 *
 	 * @author salvipascual
-	 * @param Request  $request
+	 * @param Request $request
 	 * @param Response $response
 	 */
 	public function _main(Request $request, Response $response)
@@ -23,16 +23,16 @@ class Service
 		if (empty($raffle)) {
 			$response->setCache("300");
 			return $response->setTemplate('message.ejs', [
-				"header"=>"No hay rifas abiertas",
-				"icon"=>"sentiment_very_dissatisfied",
+				"header" => "No hay rifas abiertas",
+				"icon" => "sentiment_very_dissatisfied",
 				"text" => "Lo sentimos, no hay ninguna Rifa abierta ahora mismo. Pruebe nuevamente en algunos días.",
-				"button" => ["href"=>"RIFA GANADORES", "caption"=>"Ver ganadores"]
+				"button" => ["href" => "RIFA GANADORES", "caption" => "Ver ganadores"]
 			]);
 		}
 
 		// get the image of the raffle
 		$raffle = $raffle[0];
-		$image = IMG_PATH . "raffle/" . md5($raffle->raffle_id) . ".jpg";
+		$image = SHARED_PUBLIC_PATH . "raffle/" . md5($raffle->raffle_id) . ".jpg";
 		$raffle->image = basename($image);
 
 		// get number of tickets adquired by the user
@@ -55,7 +55,7 @@ class Service
 	 * Sell tickets for the raffle
 	 *
 	 * @author salvipascual
-	 * @param Request  $request
+	 * @param Request $request
 	 * @param Response $response
 	 */
 	public function _tickets(Request $request, Response $response)
@@ -72,7 +72,7 @@ class Service
 	 * Display the list of winners
 	 *
 	 * @author salvipascual
-	 * @param Request  $request
+	 * @param Request $request
 	 * @param Response $response
 	 */
 	public function _ganadores(Request $request, Response $response)
@@ -120,7 +120,7 @@ class Service
 
 		// create the final user Response
 		$response->setCache($minsUntilMonthEnd);
-		$response->setTemplate("winners.ejs", ["winners"=>$winners]);
+		$response->setTemplate("winners.ejs", ["winners" => $winners]);
 	}
 
 	/**
@@ -155,16 +155,16 @@ class Service
 		// message if errors were found
 		if ($isError) {
 			return $response->setTemplate('message.ejs', [
-				"header"=>"Error inesperado",
-				"icon"=>"sentiment_very_dissatisfied",
+				"header" => "Error inesperado",
+				"icon" => "sentiment_very_dissatisfied",
 				"text" => "Hemos encontrado un error procesando su canje. Por favor intente nuevamente, si el problema persiste, escríbanos al soporte.",
-				"button" => ["href"=>"RIFA TICKETS", "caption"=>"Reintentar"]
+				"button" => ["href" => "RIFA TICKETS", "caption" => "Reintentar"]
 			]);
 		}
 
 		// create SQL to add the tickets
 		$vals = [];
-		for ($i=0; $i<$codes[$code]; $i++) {
+		for ($i = 0; $i < $codes[$code]; $i++) {
 			$vals[] = "('PURCHASE','{$request->person->id}')";
 		}
 		$sql = implode(",", $vals);
@@ -178,10 +178,10 @@ class Service
 		// possitive response (with seed to avoid cache)
 		$seed = date('Hms') . rand(100, 999);
 		return $response->setTemplate('message.ejs', [
-			"header"=>"Canje realizado",
-			"icon"=>"sentiment_very_satisfied",
+			"header" => "Canje realizado",
+			"icon" => "sentiment_very_satisfied",
 			"text" => "Su canje se ha realizado satisfactoriamente. Usted ha recibido {$codes[$code]} ticket(s) para la rifa en curso. ¡Buena suerte!",
-			"button" => ["href"=>"RIFA $seed", "caption"=>"Ver rifa"]
+			"button" => ["href" => "RIFA $seed", "caption" => "Ver rifa"]
 		]);
 	}
 }
