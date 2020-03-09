@@ -1,9 +1,13 @@
 <?php
 
+use Apretaste\Challenges;
+use Apretaste\Money;
 use Apretaste\Request;
 use Apretaste\Response;
+use Framework\Alert;
 use Framework\Database;
 use Apretaste\Person;
+use Apretaste\Level;
 
 class Service
 {
@@ -13,20 +17,23 @@ class Service
 	 * @author salvipascual
 	 * @param Request $request
 	 * @param Response $response
+	 *
+	 * @throws \Framework\Alert
+	 * @author salvipascual
 	 */
-	public function _main(Request $request, Response $response)
+	public function _main(Request $request, Response &$response)
 	{
 		// get the current raffle
-		$raffle = Database::query("SELECT * FROM raffle WHERE CURRENT_TIMESTAMP BETWEEN start_date AND end_date");
+		$raffle = Database::query('SELECT * FROM raffle WHERE CURRENT_TIMESTAMP BETWEEN start_date AND end_date');
 
 		// show notice if there is no open raffle
 		if (empty($raffle)) {
-			$response->setCache("300");
+			$response->setCache('300');
 			return $response->setTemplate('message.ejs', [
-				"header" => "No hay rifas abiertas",
-				"icon" => "sentiment_very_dissatisfied",
-				"text" => "Lo sentimos, no hay ninguna Rifa abierta ahora mismo. Pruebe nuevamente en algunos días.",
-				"button" => ["href" => "RIFA GANADORES", "caption" => "Ver ganadores"]
+				'header' => 'No hay rifas abiertas',
+				'icon' => 'sentiment_very_dissatisfied',
+				'text' => 'Lo sentimos, no hay ninguna Rifa abierta ahora mismo. Pruebe nuevamente en algunos días.',
+				'button' => ['href' => 'RIFA GANADORES', 'caption' => 'Ver ganadores']
 			]);
 		}
 
@@ -40,15 +47,15 @@ class Service
 		$raffle->tickets = (int) $userTickets[0]->tickets;
 
 		// calculate minutes till the end of raffle
-		$monthEnd = strtotime(date("Y-m-t 23:59:59"));
+		$monthEnd = strtotime(date('Y-m-t 23:59:59'));
 		$minsUntilMonthEnd = ceil(($monthEnd - time()) / 60);
 
 		// data to send to the view
-		$content = ["raffle" => $raffle, "credit" => $request->person->credit];
+		$content = ['raffle' => $raffle, 'credit' => $request->person->credit];
 
 		// create the user Response
 		$response->setCache($minsUntilMonthEnd);
-		$response->setTemplate("home.ejs", $content, [$image]);
+		$response->setTemplate('home.ejs', $content, [$image]);
 	}
 
 	/**
@@ -57,15 +64,18 @@ class Service
 	 * @author salvipascual
 	 * @param Request $request
 	 * @param Response $response
+	 *
+	 * @throws \Framework\Alert
+	 * @author salvipascual
 	 */
-	public function _tickets(Request $request, Response $response)
+	public function _tickets(Request $request, Response &$response)
 	{
 		// create content structure
-		$content = ["credit" => $request->person->credit];
+		$content = ['credit' => $request->person->credit];
 
 		// create the user Response
-		$response->setCache("year");
-		$response->setTemplate("tickets.ejs", $content);
+		$response->setCache('year');
+		$response->setTemplate('tickets.ejs', $content);
 	}
 
 	/**
@@ -74,12 +84,18 @@ class Service
 	 * @author salvipascual
 	 * @param Request $request
 	 * @param Response $response
+	 *
+	 * @throws \Framework\Alert
+	 * @author salvipascual
 	 */
-	public function _ganadores(Request $request, Response $response)
+	public function _ganadores(Request $request, Response &$response)
 	{
 		// get all raffles
 		$raffles = Database::query("
-			SELECT start_date, winner_1, winner_2, winner_3
+			SELECT start_date, 
+			       (select email from person where person.id = raffle.winner1) as winner_1, 
+			       (select email from person where person.id = raffle.winner2) as winner_2,
+			       (select email from person where person.id = raffle.winner3) as winner_3
 			FROM raffle
 			WHERE winner_1 <> ''
 			ORDER BY start_date DESC
@@ -115,12 +131,12 @@ class Service
 		}
 
 		// calculate minutes till the end of raffle
-		$monthEnd = strtotime(date("Y-m-t 23:59:59"));
+		$monthEnd = strtotime(date('Y-m-t 23:59:59'));
 		$minsUntilMonthEnd = ceil(($monthEnd - time()) / 60);
 
 		// create the final user Response
 		$response->setCache($minsUntilMonthEnd);
-		$response->setTemplate("winners.ejs", ["winners" => $winners]);
+		$response->setTemplate('winners.ejs', ['winners' => $winners]);
 	}
 
 	/**
@@ -130,7 +146,7 @@ class Service
 	 * @param Response
 	 * @throws Exception
 	 */
-	public function _pay(Request $request, Response $response)
+	public function _pay(Request $request, Response &$response)
 	{
 		// get the amulet to purchase
 		$code = $request->input->data->code;
@@ -144,22 +160,20 @@ class Service
 
 		// process the payment
 		try {
-			MoneyNew::buy($request->person->id, $code);
+			Money::purchase($request->person->id, $code);
 
-			Challenges::complete("buy-raffle-tickets", $request->person->id);
+			Challenges::complete('buy-raffle-tickets', $request->person->id);
 		} catch (Exception $e) {
-			Utils::createAlert("RIFA: ".$e->getMessage());
-			$isError = true;
-		}
-
-		// message if errors were found
-		if ($isError) {
-			return $response->setTemplate('message.ejs', [
-				"header" => "Error inesperado",
-				"icon" => "sentiment_very_dissatisfied",
-				"text" => "Hemos encontrado un error procesando su canje. Por favor intente nuevamente, si el problema persiste, escríbanos al soporte.",
-				"button" => ["href" => "RIFA TICKETS", "caption" => "Reintentar"]
+			$response->setTemplate('message.ejs', [
+			  'header' => 'Error inesperado',
+			  'icon' => 'sentiment_very_dissatisfied',
+			  'text' => 'Hemos encontrado un error procesando su canje. Por favor intente nuevamente, si el problema persiste, escríbanos al soporte.',
+			  'button' => ['href' => 'RIFA TICKETS', 'caption' => 'Reintentar']
 			]);
+
+			// post message for the developers
+			$alert = new Alert($e->getCode(), 'RIFA: ' . $e->getMessage());
+			return $alert->post();
 		}
 
 		// create SQL to add the tickets
@@ -167,7 +181,7 @@ class Service
 		for ($i = 0; $i < $codes[$code]; $i++) {
 			$vals[] = "('PURCHASE','{$request->person->id}')";
 		}
-		$sql = implode(",", $vals);
+		$sql = implode(',', $vals);
 
 		// add tickets to the database
 		Database::query("INSERT INTO ticket (origin,person_id) VALUES $sql;");
