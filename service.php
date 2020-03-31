@@ -40,6 +40,7 @@ class Service
 		// get the image of the raffle
 		$raffle = $raffle[0];
 		$image = SHARED_PUBLIC_PATH . "raffle/" . md5($raffle->raffle_id) . ".jpg";
+		$raffle->end_date = strftime('%e de %B del %Y', strtotime($raffle->end_date));
 		$raffle->image = basename($image);
 
 		// get number of tickets adquired by the user
@@ -93,9 +94,9 @@ class Service
 		// get all raffles
 		$raffles = Database::query("
 			SELECT start_date, 
-			       (select email from person where person.id = raffle.winner1) as winner_1, 
-			       (select email from person where person.id = raffle.winner2) as winner_2,
-			       (select email from person where person.id = raffle.winner3) as winner_3
+				(select email from person where person.id = raffle.winner1) as winner_1, 
+				(select email from person where person.id = raffle.winner2) as winner_2,
+				(select email from person where person.id = raffle.winner3) as winner_3
 			FROM raffle
 			WHERE winner_1 <> ''
 			ORDER BY start_date DESC
@@ -106,7 +107,7 @@ class Service
 		foreach ($raffles as $raffle) {
 			// create the item for the content
 			$item = new \stdClass();
-			$item->startDate = $raffle->start_date;
+			$item->startDate = ucfirst(strftime('%B %Y', strtotime($raffle->start_date)));
 
 			// get winner #1 details
 			$winner1 = Person::find($raffle->winner_1);
