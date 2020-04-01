@@ -17,8 +17,6 @@ class Service
 	 * @author salvipascual
 	 * @param Request $request
 	 * @param Response $response
-	 *
-	 * @throws \Framework\Alert
 	 * @author salvipascual
 	 */
 	public function _main(Request $request, Response &$response)
@@ -65,8 +63,6 @@ class Service
 	 * @author salvipascual
 	 * @param Request $request
 	 * @param Response $response
-	 *
-	 * @throws \Framework\Alert
 	 * @author salvipascual
 	 */
 	public function _tickets(Request $request, Response &$response)
@@ -85,8 +81,6 @@ class Service
 	 * @author salvipascual
 	 * @param Request $request
 	 * @param Response $response
-	 *
-	 * @throws \Framework\Alert
 	 * @author salvipascual
 	 */
 	public function _ganadores(Request $request, Response &$response)
@@ -94,11 +88,11 @@ class Service
 		// get all raffles
 		$raffles = Database::query("
 			SELECT start_date, 
-				(select email from person where person.id = raffle.winner1) as winner_1, 
-				(select email from person where person.id = raffle.winner2) as winner_2,
-				(select email from person where person.id = raffle.winner3) as winner_3
+				(select email from person where person.id = raffle.winner1) AS winner1, 
+				(select email from person where person.id = raffle.winner2) AS winner2,
+				(select email from person where person.id = raffle.winner3) AS winner3
 			FROM raffle
-			WHERE winner_1 <> ''
+			WHERE winner1 <> ''
 			ORDER BY start_date DESC
 			LIMIT 6");
 
@@ -110,19 +104,19 @@ class Service
 			$item->startDate = ucfirst(strftime('%B %Y', strtotime($raffle->start_date)));
 
 			// get winner #1 details
-			$winner1 = Person::find($raffle->winner_1);
+			$winner1 = Person::find($raffle->winner1);
 			$item->w1Username = $winner1->username;
 			$item->w1Avatar = $winner1->avatar;
 			$item->w1AvatarColor = $winner1->avatarColor;
 
 			// get winner #2 details
-			$winner2 = Person::find($raffle->winner_2);
+			$winner2 = Person::find($raffle->winner2);
 			$item->w2Username = $winner2->username;
 			$item->w2Avatar = $winner2->avatar;
 			$item->w2AvatarColor = $winner2->avatarColor;
 
 			// get winner #3 details
-			$winner3 = Person::find($raffle->winner_3);
+			$winner3 = Person::find($raffle->winner3);
 			$item->w3Username = $winner3->username;
 			$item->w3Avatar = $winner3->avatar;
 			$item->w3AvatarColor = $winner3->avatarColor;
