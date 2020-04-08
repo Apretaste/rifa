@@ -159,6 +159,17 @@ class Service
 
 			Challenges::complete('buy-raffle-tickets', $request->person->id);
 		} catch (Exception $e) {
+
+			if ($e->getCode() === 532) {
+				$response->setTemplate('message.ejs', [
+				  'header' => 'No tienes suficiente cr&eacute;dito',
+				  'icon' => 'sentiment_very_dissatisfied',
+				  'text' => 'Tu cr&eacute;dito es insuficiente para comprar tickets',
+				  'button' => ['href' => 'CREDITO', 'caption' => 'Revisa tu cr&eacute;dito']
+				]);
+				return;
+			}
+
 			$response->setTemplate('message.ejs', [
 			  'header' => 'Error inesperado',
 			  'icon' => 'sentiment_very_dissatisfied',
