@@ -11,17 +11,29 @@
 			<ul class="collection">
 				<li class="collection-item avatar">
 					<div class="person-avatar circle" face="<%= w.w1Avatar %>" color="<%= w.w1AvatarColor %>" size="42"></div>
-					<span class="title orange-text"><b>@<%= w.w1Username %></b></span>
+					<span class="title orange-text">
+						<a href="#!" onclick="apretaste.send({command:'PERFIL', data:{username:'<%= w.w1Username %>'}});">
+							<b>@<%= w.w1Username %></b>
+						</a>
+					</span>
 					<p>Ganó el primer lugar de la rifa.</p>
 				</li>
 				<li class="collection-item avatar">
 					<div class="person-avatar circle" face="<%= w.w2Avatar %>" color="<%= w.w2AvatarColor %>" size="42"></div>
-					<span class="title grey-text"><b>@<%= w.w2Username %></b></span>
+					<span class="title grey-text">
+						<a href="#!" onclick="apretaste.send({command:'PERFIL', data:{username:'<%= w.w2Username %>'}});">
+							<b>@<%= w.w2Username %></b>
+						</a>
+					</span>
 					<p>Ganó el segundo lugar de la rifa.</p>
 				</li>
 				<li class="collection-item avatar">
 					<div class="person-avatar circle" face="<%= w.w3Avatar %>" color="<%= w.w3AvatarColor %>" size="42"></div>
-					<span class="title brown-text"><b>@<%= w.w3Username %></b></span>
+					<span class="title brown-text">
+						<a href="#!" onclick="apretaste.send({command:'PERFIL', data:{username:'<%= w.w3Username %>'}});">
+							<b>@<%= w.w3Username %></b>
+						</a>
+					</span>
 					<p>Ganó el tercer lugar de la rifa.</p>
 				</li>
 			</ul>
