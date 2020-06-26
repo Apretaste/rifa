@@ -14,9 +14,9 @@ class Service
 	/**
 	 * Get the current raffle
 	 *
-	 * @author salvipascual
 	 * @param Request $request
 	 * @param Response $response
+	 * @author salvipascual
 	 * @author salvipascual
 	 */
 	public function _main(Request $request, Response &$response)
@@ -43,7 +43,7 @@ class Service
 
 		// get number of tickets adquired by the user
 		$userTickets = Database::query("SELECT COUNT(ticket_id) AS tickets FROM ticket WHERE raffle_id is NULL AND person_id = '{$request->person->id}'");
-		$raffle->tickets = (int) $userTickets[0]->tickets;
+		$raffle->tickets = (int)$userTickets[0]->tickets;
 
 		// calculate minutes till the end of raffle
 		$monthEnd = strtotime(date('Y-m-t 23:59:59'));
@@ -60,9 +60,9 @@ class Service
 	/**
 	 * Sell tickets for the raffle
 	 *
-	 * @author salvipascual
 	 * @param Request $request
 	 * @param Response $response
+	 * @author salvipascual
 	 * @author salvipascual
 	 */
 	public function _tickets(Request $request, Response &$response)
@@ -78,9 +78,9 @@ class Service
 	/**
 	 * Display the list of winners
 	 *
-	 * @author salvipascual
 	 * @param Request $request
 	 * @param Response $response
+	 * @author salvipascual
 	 * @author salvipascual
 	 */
 	public function _ganadores(Request $request, Response &$response)
@@ -108,18 +108,21 @@ class Service
 			$item->w1Username = $winner1->username;
 			$item->w1Avatar = $winner1->avatar;
 			$item->w1AvatarColor = $winner1->avatarColor;
+			$item->w1Gender = $winner1->gender;
 
 			// get winner #2 details
 			$winner2 = Person::find($raffle->winner2);
 			$item->w2Username = $winner2->username;
 			$item->w2Avatar = $winner2->avatar;
 			$item->w2AvatarColor = $winner2->avatarColor;
+			$item->w2Gender = $winner2->gender;
 
 			// get winner #3 details
 			$winner3 = Person::find($raffle->winner3);
 			$item->w3Username = $winner3->username;
 			$item->w3Avatar = $winner3->avatar;
 			$item->w3AvatarColor = $winner3->avatarColor;
+			$item->w3Gender = $winner3->gender;
 
 			// add to the content
 			$winners[] = $item;
@@ -163,19 +166,19 @@ class Service
 		} catch (Exception $e) {
 			if ($e->getCode() === 532) {
 				$response->setTemplate('message.ejs', [
-				  'header' => 'No tienes suficiente cr&eacute;dito',
-				  'icon' => 'sentiment_very_dissatisfied',
-				  'text' => 'Tu cr&eacute;dito es insuficiente para comprar tickets',
-				  'button' => ['href' => 'CREDITO', 'caption' => 'Revisa tu cr&eacute;dito']
+					'header' => 'No tienes suficiente cr&eacute;dito',
+					'icon' => 'sentiment_very_dissatisfied',
+					'text' => 'Tu cr&eacute;dito es insuficiente para comprar tickets',
+					'button' => ['href' => 'CREDITO', 'caption' => 'Revisa tu cr&eacute;dito']
 				]);
 				return;
 			}
 
 			$response->setTemplate('message.ejs', [
-			  'header' => 'Error inesperado',
-			  'icon' => 'sentiment_very_dissatisfied',
-			  'text' => 'Hemos encontrado un error procesando su canje. Por favor intente nuevamente, si el problema persiste, escríbanos al soporte.',
-			  'button' => ['href' => 'RIFA TICKETS', 'caption' => 'Reintentar']
+				'header' => 'Error inesperado',
+				'icon' => 'sentiment_very_dissatisfied',
+				'text' => 'Hemos encontrado un error procesando su canje. Por favor intente nuevamente, si el problema persiste, escríbanos al soporte.',
+				'button' => ['href' => 'RIFA TICKETS', 'caption' => 'Reintentar']
 			]);
 
 			// post message for the developers

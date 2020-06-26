@@ -1,42 +1,48 @@
 <div class="row">
-	<div class="col s12">
-		<ul class="tabs tabs-fixed-width">
-			<li class="tab"><a href="#" onclick="apretaste.send({command: 'RIFA'})">Rifa Actual</a></li>
-			<li class="tab"><a href="#" onclick="apretaste.send({command: 'RIFA TICKETS'})">Tickets</a></li>
-			<li class="tab"><a href="#" class="active">Ganadores</a></li>
-		</ul>
+    <div class="col s12">
+        <ul class="tabs tabs-fixed-width">
+            <li class="tab"><a href="#" onclick="apretaste.send({command: 'RIFA'})">Rifa Actual</a></li>
+            <li class="tab"><a href="#" onclick="apretaste.send({command: 'RIFA TICKETS'})">Tickets</a></li>
+            <li class="tab"><a href="#" class="active">Ganadores</a></li>
+        </ul>
 
-		<% winners.forEach(function(w){ %>
-			<h2><%= w.startDate %></h2>
-			<ul class="collection">
-				<li class="collection-item avatar">
-					<div class="person-avatar circle" face="<%= w.w1Avatar %>" color="<%= w.w1AvatarColor %>" size="42"></div>
-					<span class="title orange-text">
-						<a href="#!" onclick="apretaste.send({command:'PERFIL', data:{username:'<%= w.w1Username %>'}});">
-							<b>@<%= w.w1Username %></b>
+        <% winners.forEach(function(w){ %>
+            <h2><%= w.startDate %></h2>
+            <ul class="collection">
+                <li class="collection-item avatar">
+                    <div class="person-avatar circle" face="<%= w.w1Avatar %>" color="<%= w.w1AvatarColor %>"
+                         size="42"></div>
+                    <span class="title orange-text">
+						<a href="#!"
+                           onclick="apretaste.send({command:'PERFIL', data:{username:'<%= w.w1Username %>'}});">
+							<span class="<%= w.w1Gender == "M" ? "blue-text" : w.w1Gender == "F" ? "pink-text text-lighten-2" : "black-text"; %>">@<%= w.w1Username %></span>
 						</a>
 					</span>
-					<p>Ganó el primer lugar de la rifa.</p>
-				</li>
-				<li class="collection-item avatar">
-					<div class="person-avatar circle" face="<%= w.w2Avatar %>" color="<%= w.w2AvatarColor %>" size="42"></div>
-					<span class="title grey-text">
-						<a href="#!" onclick="apretaste.send({command:'PERFIL', data:{username:'<%= w.w2Username %>'}});">
-							<b>@<%= w.w2Username %></b>
+                    <p>Ganó el primer lugar de la rifa.</p>
+                </li>
+                <li class="collection-item avatar">
+                    <div class="person-avatar circle" face="<%= w.w2Avatar %>" color="<%= w.w2AvatarColor %>"
+                         size="42"></div>
+                    <span class="title grey-text">
+						<a href="#!"
+                           onclick="apretaste.send({command:'PERFIL', data:{username:'<%= w.w2Username %>'}});">
+							<span class="<%= w.w2Gender == "M" ? "blue-text" : w.w2Gender == "F" ? "pink-text text-lighten-2" : "black-text"; %>">@<%= w.w2Username %></span>
 						</a>
 					</span>
-					<p>Ganó el segundo lugar de la rifa.</p>
-				</li>
-				<li class="collection-item avatar">
-					<div class="person-avatar circle" face="<%= w.w3Avatar %>" color="<%= w.w3AvatarColor %>" size="42"></div>
-					<span class="title brown-text">
-						<a href="#!" onclick="apretaste.send({command:'PERFIL', data:{username:'<%= w.w3Username %>'}});">
-							<b>@<%= w.w3Username %></b>
+                    <p>Ganó el segundo lugar de la rifa.</p>
+                </li>
+                <li class="collection-item avatar">
+                    <div class="person-avatar circle" face="<%= w.w3Avatar %>" color="<%= w.w3AvatarColor %>"
+                         size="42"></div>
+                    <span class="title brown-text">
+						<a href="#!"
+                           onclick="apretaste.send({command:'PERFIL', data:{username:'<%= w.w3Username %>'}});">
+							<span class="<%= w.w3Gender == "M" ? "blue-text" : w.w3Gender == "F" ? "pink-text text-lighten-2" : "black-text"; %>">@<%= w.w3Username %></span>
 						</a>
 					</span>
-					<p>Ganó el tercer lugar de la rifa.</p>
-				</li>
-			</ul>
-		<% }) %>
-	</div>
+                    <p>Ganó el tercer lugar de la rifa.</p>
+                </li>
+            </ul>
+        <% }) %>
+    </div>
 </div>
