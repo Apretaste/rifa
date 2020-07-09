@@ -14,15 +14,18 @@ class Service
 	/**
 	 * Get the current raffle
 	 *
+	 * @author salvipascual
 	 * @param Request $request
 	 * @param Response $response
-	 * @author salvipascual
-	 * @author salvipascual
 	 */
-	public function _main(Request $request, Response &$response)
+	public function _main(Request $request, Response $response)
 	{
 		// get the current raffle
-		$raffle = Database::query('SELECT * FROM raffle WHERE CURRENT_TIMESTAMP BETWEEN start_date AND end_date');
+		$raffle = Database::queryFirst('
+			SELECT item_desc, end_date
+			FROM raffle 
+			WHERE CURRENT_TIMESTAMP BETWEEN start_date AND end_date
+			ORDER BY start_date');
 
 		// show notice if there is no open raffle
 		if (empty($raffle)) {
@@ -30,31 +33,22 @@ class Service
 			return $response->setTemplate('message.ejs', [
 				'header' => 'No hay rifas abiertas',
 				'icon' => 'sentiment_very_dissatisfied',
-				'text' => 'Lo sentimos, no hay ninguna Rifa abierta ahora mismo. Pruebe nuevamente en algunos días.',
+				'text' => 'Lo sentimos, no hay ninguna rifa abierta ahora mismo. Pruebe nuevamente en algunos días.',
 				'button' => ['href' => 'RIFA GANADORES', 'caption' => 'Ver ganadores']
 			]);
 		}
 
-		// get the image of the raffle
-		$raffle = $raffle[0];
-		$image = SHARED_PUBLIC_PATH . "raffle/" . md5($raffle->raffle_id) . ".jpg";
-		$raffle->end_date = strftime('%e de %B del %Y', strtotime($raffle->end_date));
-		$raffle->image = basename($image);
-
 		// get number of tickets adquired by the user
-		$userTickets = Database::query("SELECT COUNT(ticket_id) AS tickets FROM ticket WHERE raffle_id is NULL AND person_id = '{$request->person->id}'");
-		$raffle->tickets = (int)$userTickets[0]->tickets;
+		$tickets = Database::queryFirst("SELECT COUNT(ticket_id) AS cnt FROM ticket WHERE raffle_id is NULL AND person_id = '{$request->person->id}'");
+		$raffle->tickets = (int) $tickets->cnt;
 
 		// calculate minutes till the end of raffle
 		$monthEnd = strtotime(date('Y-m-t 23:59:59'));
 		$minsUntilMonthEnd = ceil(($monthEnd - time()) / 60);
 
-		// data to send to the view
-		$content = ['raffle' => $raffle, 'credit' => $request->person->credit];
-
 		// create the user Response
 		$response->setCache($minsUntilMonthEnd);
-		$response->setTemplate('home.ejs', $content, [$image]);
+		$response->setTemplate('home.ejs', ['raffle'=>$raffle, 'credit'=>$request->person->credit]);
 	}
 
 	/**
@@ -65,7 +59,7 @@ class Service
 	 * @author salvipascual
 	 * @author salvipascual
 	 */
-	public function _tickets(Request $request, Response &$response)
+	public function _tickets(Request $request, Response $response)
 	{
 		// create content structure
 		$content = ['credit' => $request->person->credit];
@@ -83,11 +77,11 @@ class Service
 	 * @author salvipascual
 	 * @author salvipascual
 	 */
-	public function _ganadores(Request $request, Response &$response)
+	public function _ganadores(Request $request, Response $response)
 	{
 		// get all raffles
 		$raffles = Database::query("
-			SELECT start_date, 
+			SELECT start_date, end_date, 
 				(select email from person where person.id = raffle.winner1) AS winner1, 
 				(select email from person where person.id = raffle.winner2) AS winner2,
 				(select email from person where person.id = raffle.winner3) AS winner3
@@ -101,7 +95,7 @@ class Service
 		foreach ($raffles as $raffle) {
 			// create the item for the content
 			$item = new \stdClass();
-			$item->startDate = ucfirst(strftime('%B %Y', strtotime($raffle->start_date)));
+			$item->dates = strftime('%B %e, %Y', strtotime($raffle->start_date)) . ' a ' . strftime('%B %e, %Y', strtotime($raffle->end_date));
 
 			// get winner #1 details
 			$winner1 = Person::find($raffle->winner1);
@@ -146,7 +140,7 @@ class Service
 	 * @return Response
 	 * @throws Exception
 	 */
-	public function _pay(Request $request, Response &$response)
+	public function _pay(Request $request, Response $response)
 	{
 		// get the amulet to purchase
 		$code = $request->input->data->code;
@@ -158,22 +152,25 @@ class Service
 			$isError = true;
 		}
 
-		// process the payment
 		try {
+			// process the payment
 			Money::purchase($request->person->id, $code);
 
+			// complete the challenge
 			Challenges::complete('buy-raffle-tickets', $request->person->id);
 		} catch (Exception $e) {
+			// error si no hay sificiente credito
 			if ($e->getCode() === 532) {
 				$response->setTemplate('message.ejs', [
-					'header' => 'No tienes suficiente cr&eacute;dito',
+					'header' => 'No tienes suficiente crédito',
 					'icon' => 'sentiment_very_dissatisfied',
-					'text' => 'Tu cr&eacute;dito es insuficiente para comprar tickets',
-					'button' => ['href' => 'CREDITO', 'caption' => 'Revisa tu cr&eacute;dito']
+					'text' => 'Tu crédito es insuficiente para comprar tickets',
+					'button' => ['href' => 'CREDITO', 'caption' => 'Revisa tu crédito']
 				]);
 				return;
 			}
 
+			// otros errores
 			$response->setTemplate('message.ejs', [
 				'header' => 'Error inesperado',
 				'icon' => 'sentiment_very_dissatisfied',

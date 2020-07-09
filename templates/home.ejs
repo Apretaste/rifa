@@ -6,18 +6,14 @@
 			<li class="tab"><a href="#" onclick="apretaste.send({command: 'RIFA GANADORES'})">Ganadores</a></li> 
 		</ul>
 
-		<p>Estamos contentos de poder traerles nuestra rifa mensual. Canjee sus créditos por tickets y prepárese para ganar. El <b><%= raffle.end_date %> a las 11:59pm</b> pondremos los tickets en un bombo y escribiremos a los ganadores.</p>
+		<p>Estamos contentos de poder traerles nuestra rifa. Canjee sus créditos por tickets y prepárese para ganar. El <b><%= moment(raffle.end_date).format('D [de] MMMM [a las] h:mm A') %></b> pondremos los tickets en un bombo y le escribiremos a los ganadores.</p>
 
-		<div>
-			<img class="fullscreen" src="{{APP_IMAGE_PATH}}<%= raffle.image %>" alt="Artículo a rifar"/>
-		</div>
+		<img class="fullscreen" src="{{APP_SERVICE_PATH}}/images/rifa.jpg" alt="Artículo a rifar">
 
 		<p><%= raffle.item_desc %></p>
 
-		<div class="chip">
-			<i class="material-icons tiny">local_offer</i>
-			Usted tiene <b><%= raffle.tickets %> ticket(s)</b>
-		</div>
+		<span class="chip"><i class="material-icons icon">local_offer</i> Usted tiene <%= raffle.tickets %> ticket(s)</span>
+
 		<div class="note grey-text">Si la cantidad es incorrecta, refresque tocando el botón en la barra verde de arriba (las dos flechas que forman un círculo).</div>
 	</div>
 </div>
