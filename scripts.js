@@ -19,3 +19,39 @@ function buy() {
 		redirect: true
 	});
 }
+
+var share;
+
+function init() {
+	share = {
+		text: 'La rifa actual',
+		icon: 'ticket-alt',
+		send: function () {
+			apretaste.send({
+				command: 'PIZARRA PUBLICAR',
+				redirect: false,
+				callback: {
+					name: 'toast',
+					data: 'La rifa fue compartida en Pizarra'
+				},
+				data: {
+					text: $('#message').val(),
+					image: '',
+					link: {
+						command: btoa(JSON.stringify({
+							command: 'RIFA',
+							data: {
+							}
+						})),
+						icon: share.icon,
+						text: share.text
+					}
+				}
+			})
+		}
+	};
+}
+
+function toast(message){
+	M.toast({html: message});
+}
