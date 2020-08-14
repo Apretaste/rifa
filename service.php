@@ -220,13 +220,13 @@ class Service
 
 		if ($id !== null) {
 			// get the current raffle
-			$raffle = Database::queryFirst('
+			$raffle = Database::queryFirst("
 			SELECT *,
 			    (select email from person where person.id = raffle.winner1) AS winner1, 
 				(select email from person where person.id = raffle.winner2) AS winner2,
 				(select email from person where person.id = raffle.winner3) AS winner3
 			FROM raffle 
-			WHERE raffle_id = $id');
+			WHERE raffle_id = $id");
 
 			// show notice if there is no open raffle
 			if ($raffle === null) {
