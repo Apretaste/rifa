@@ -22,7 +22,7 @@ class Service
 	{
 		// get the current raffle
 		$raffle = Database::queryFirst('
-			SELECT item_desc, end_date
+			SELECT *
 			FROM raffle 
 			WHERE CURRENT_TIMESTAMP BETWEEN start_date AND end_date
 			ORDER BY start_date');
