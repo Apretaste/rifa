@@ -39,8 +39,9 @@ function init() {
 					image: '',
 					link: {
 						command: btoa(JSON.stringify({
-							command: 'RIFA',
+							command: 'RIFA VER',
 							data: {
+								id: raffle.id
 							}
 						})),
 						icon: share.icon,
