@@ -273,7 +273,7 @@ class Service
 
 			// create the user Response
 			$response->setCache($minsUntilMonthEnd);
-			$response->setTemplate('home.ejs', ['raffle' => $raffle, 'credit' => $request->person->credit, 'winners' => [$item]]);
+			return $response->setTemplate('home.ejs', ['raffle' => $raffle, 'credit' => $request->person->credit, 'winners' => [$item]]);
 		}
 
 		return $response->setTemplate('message.ejs', [
