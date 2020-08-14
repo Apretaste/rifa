@@ -229,7 +229,7 @@ class Service
 			WHERE raffle_id = $id');
 
 			// show notice if there is no open raffle
-			if (empty($raffle)) {
+			if ($raffle === null) {
 				return $response->setTemplate('message.ejs', [
 					'header' => 'No hay rifas abiertas',
 					'icon' => 'sentiment_very_dissatisfied',
