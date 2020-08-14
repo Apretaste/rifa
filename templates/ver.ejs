@@ -7,7 +7,7 @@
 		</ul>
 
 		<img class="fullscreen" src="{{APP_SERVICE_PATH}}/images/rifa.jpg" alt="Artículo a rifar">
-		<p>Rifa del <%= moment(raffle.end_date).format('D [de] MMMM [a las] h:mm A') %> al <%= moment(raffle.end_date).format('D [de] MMMM [a las] h:mm A') %> </p>
+		<p>Rifa del <%= moment(raffle.start_date).format('D [de] MMMM [a las] h:mm A') %> al <%= moment(raffle.end_date).format('D [de] MMMM [a las] h:mm A') %> </p>
 
 		<span class="chip"><i class="material-icons icon">local_offer</i> Usted tiene <%= raffle.tickets %> ticket(s)</span>
 

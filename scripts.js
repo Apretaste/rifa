@@ -24,7 +24,7 @@ var share;
 
 function init(raffle) {
 	share = {
-		text: 'RIFA del ' + raffle.start_date + ': ' + raffle.item_desc.substr(0,100) + '...',
+		text: 'RIFA del ' + moment(raffle.start_date).format('D [de] MMMM [a las] h:mm A') + ': ' + raffle.item_desc.substr(0,100) + '...',
 		icon: 'ticket-alt',
 		send: function () {
 			apretaste.send({
