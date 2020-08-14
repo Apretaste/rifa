@@ -22,9 +22,9 @@ function buy() {
 
 var share;
 
-function init() {
+function init(raffle) {
 	share = {
-		text: 'La rifa actual',
+		text: 'RIFA del ' + raffle.start_date + ': ' + raffle.item_desc.substr(0,100),
 		icon: 'ticket-alt',
 		send: function () {
 			apretaste.send({
@@ -41,7 +41,7 @@ function init() {
 						command: btoa(JSON.stringify({
 							command: 'RIFA VER',
 							data: {
-								id: raffle.id
+								id: raffle.raffle_id
 							}
 						})),
 						icon: share.icon,
