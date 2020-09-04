@@ -20,11 +20,15 @@ function buy() {
 	});
 }
 
+function teaser(text) {
+	return text.length <= 50 ? text : text.substr(0, 50) + "...";
+}
+
 var share;
 
 function init(raffle) {
 	share = {
-		text: 'RIFA del ' + moment(raffle.start_date).format('D [de] MMMM [a las] h:mm A') + ': ' + raffle.item_desc.substr(0,50) + '...',
+		text: teaser('RIFA ' + moment(raffle.start_date).format('MMMM D, Y') + ': ' + raffle.item_desc),
 		icon: 'ticket-alt',
 		send: function () {
 			apretaste.send({
