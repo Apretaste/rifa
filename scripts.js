@@ -19,3 +19,44 @@ function buy() {
 		redirect: true
 	});
 }
+
+function teaser(text) {
+	return text.length <= 50 ? text : text.substr(0, 50) + "...";
+}
+
+var share;
+
+function init(raffle) {
+	share = {
+		text: teaser('RIFA ' + moment(raffle.start_date).format('MMMM D, Y') + ': ' + raffle.item_desc),
+		icon: 'ticket-alt',
+		send: function () {
+			apretaste.send({
+				command: 'PIZARRA PUBLICAR',
+				redirect: false,
+				callback: {
+					name: 'toast',
+					data: 'La rifa fue compartida en Pizarra'
+				},
+				data: {
+					text: $('#message').val(),
+					image: '',
+					link: {
+						command: btoa(JSON.stringify({
+							command: 'RIFA VER',
+							data: {
+								id: raffle.raffle_id
+							}
+						})),
+						icon: share.icon,
+						text: share.text
+					}
+				}
+			})
+		}
+	};
+}
+
+function toast(message){
+	M.toast({html: message});
+}
