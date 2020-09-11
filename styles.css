@@ -37,7 +37,6 @@
 	min-height: 65px;
 }
 
-
 /* TAGS */
 
 .chip .icon {
@@ -47,13 +46,21 @@
 	padding-right: 5px;
 }
 
+.chip.tiny .icon {
+	line-height: 20px;
+}
+
+.chip.medium {
+	height: 20px;
+	line-height: 1.5;
+}
+
 .chip.clear {
 	color: rgba(0,0,0,0.87);
 	margin: 0px;
 	padding: 0px;
 	background-color: transparent;
 }
-
 
 /* CARDS */
 
