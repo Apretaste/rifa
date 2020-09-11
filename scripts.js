@@ -1,4 +1,5 @@
 var currentCode = false;
+var share;
 
 $(document).ready(function () {
 	$('.tabs').tabs();
@@ -20,12 +21,12 @@ function buy() {
 	});
 }
 
+// create a teaser text for the popup
 function teaser(text) {
 	return text.length <= 50 ? text : text.substr(0, 50) + "...";
 }
 
-var share;
-
+// inits a share popup
 function init(raffle) {
 	share = {
 		text: teaser('RIFA ' + moment(raffle.start_date).format('MMMM D, Y') + ': ' + raffle.item_desc),
@@ -43,10 +44,8 @@ function init(raffle) {
 					image: '',
 					link: {
 						command: btoa(JSON.stringify({
-							command: 'RIFA VER',
-							data: {
-								id: raffle.raffle_id
-							}
+							command: 'RIFA',
+							data: {id: raffle.raffle_id}
 						})),
 						icon: share.icon,
 						text: share.text
