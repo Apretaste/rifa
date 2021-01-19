@@ -1,13 +1,14 @@
 <?php
 
-use Apretaste\Challenges;
+use Apretaste\Level;
 use Apretaste\Money;
+use Apretaste\Person;
 use Apretaste\Request;
 use Apretaste\Response;
+use Apretaste\Tutorial;
+use Apretaste\Challenges;
 use Framework\Alert;
 use Framework\Database;
-use Apretaste\Person;
-use Apretaste\Level;
 
 class Service
 {
@@ -158,6 +159,9 @@ class Service
 
 			// complete the challenge
 			Challenges::complete('buy-raffle-tickets', $request->person->id);
+
+			// complete tutorial
+			Tutorial::complete($request->person->id, 'raffle_ticket');
 		} catch (Exception $e) {
 			// error si no hay sificiente credito
 			if ($e->getCode() === 532) {
