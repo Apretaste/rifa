@@ -2,18 +2,29 @@
 
 use Apretaste\Level;
 use Apretaste\Money;
-use Apretaste\Person;
 use Apretaste\Request;
 use Apretaste\Response;
 use Apretaste\Tutorial;
 use Apretaste\Challenges;
-use Framework\Alert;
+use Apretaste\Notifications;
 use Framework\Database;
 
 class Service
 {
+	private $currentRaffle;
+
 	/**
-	 * Get the current raffle
+	 * pick the right raffle, if before 7PM, today, else tomorrow
+	 *
+	 * @author salvipascual
+	 */
+	public function __construct()
+	{
+		$this->currentRaffle = (date('H') < 19) ? date('Y-m-d') : date('Y-m-d', strtotime('tomorrow'));
+	}
+
+	/**
+	 * Play the raffle
 	 *
 	 * @author salvipascual
 	 * @param Request $request
@@ -21,192 +32,114 @@ class Service
 	 */
 	public function _main(Request $request, Response $response)
 	{
-		// get the current raffle
-		$raffle = Database::queryFirst('
-			SELECT *
-			FROM raffle 
-			WHERE CURRENT_TIMESTAMP BETWEEN start_date AND end_date
-			ORDER BY start_date');
+		// get values your tickets
+		$res = Database::queryFirst("SELECT tickets FROM _rifa_tickets WHERE person_id = {$request->person->id} AND raffle = '{$this->currentRaffle}'");
+		$tickets = empty($res->tickets) ? 0 : $res->tickets;
 
-		// show notice if there is no open raffle
-		if (empty($raffle)) {
-			$response->setCache('300');
-			return $response->setTemplate('message.ejs', [
-				'header' => 'No hay rifas abiertas',
-				'icon' => 'sentiment_very_dissatisfied',
-				'text' => 'Lo sentimos, no hay ninguna rifa abierta ahora mismo. Pruebe nuevamente en algunos días.',
-				'button' => ['href' => 'RIFA GANADORES', 'caption' => 'Ver ganadores']
-			]);
-		}
+		// get all the tickets playing
+		$res = Database::queryFirst("SELECT SUM(tickets) AS total FROM _rifa_tickets WHERE raffle = '{$this->currentRaffle}'");
+		$playing = empty($res->total) ? 0 : $res->total;
 
-		// get number of tickets adquired by the user
-		$tickets = Database::queryFirst("SELECT COUNT(ticket_id) AS cnt FROM ticket WHERE raffle_id is NULL AND person_id = '{$request->person->id}'");
-		$raffle->tickets = (int) $tickets->cnt;
-
-		// calculate minutes till the end of raffle
-		$monthEnd = strtotime(date('Y-m-t 23:59:59'));
-		$minsUntilMonthEnd = ceil(($monthEnd - time()) / 60);
-
-		// create the user Response
-		$response->setCache($minsUntilMonthEnd);
-		$response->setTemplate('home.ejs', ['raffle' => $raffle, 'credit' => $request->person->credit]);
-	}
-
-	/**
-	 * Sell tickets for the raffle
-	 *
-	 * @param Request $request
-	 * @param Response $response
-	 * @author salvipascual
-	 * @author salvipascual
-	 */
-	public function _tickets(Request $request, Response $response)
-	{
 		// create content structure
-		$content = ['credit' => $request->person->credit];
+		$content = [
+			'raffle' => $this->currentRaffle,
+			'playing' => $playing,
+			'tickets' => $tickets,
+			'chances' => ($playing > 0) ? ($tickets * 100) / $playing : 0,
+			'credit' => $request->person->credit
+		];
 
-		// create the user Response
-		$response->setCache('year');
-		$response->setTemplate('tickets.ejs', $content);
+		// send data to the view
+		$response->setCache();
+		$response->setTemplate('rifa.ejs', $content);
 	}
 
 	/**
-	 * Display the list of winners
+	 * List of winners
 	 *
+	 * @author salvipascual
 	 * @param Request $request
 	 * @param Response $response
-	 * @author salvipascual
-	 * @author salvipascual
 	 */
 	public function _ganadores(Request $request, Response $response)
 	{
-		// get all raffles
-		$raffles = Database::query("
-			SELECT start_date, end_date, 
-				(select email from person where person.id = raffle.winner1) AS winner1, 
-				(select email from person where person.id = raffle.winner2) AS winner2,
-				(select email from person where person.id = raffle.winner3) AS winner3
-			FROM raffle
-			WHERE winner1 <> ''
-			ORDER BY start_date DESC
-			LIMIT 6");
-
-		// create content to send to the view
-		$winners = [];
-		foreach ($raffles as $raffle) {
-			// create the item for the content
-			$item = new \stdClass();
-			$item->dates = strftime('%B %e, %Y', strtotime($raffle->start_date)) . ' a ' . strftime('%B %e, %Y', strtotime($raffle->end_date));
-
-			// get winner #1 details
-			$winner1 = Person::find($raffle->winner1);
-			$item->w1Username = $winner1->username;
-			$item->w1Avatar = $winner1->avatar;
-			$item->w1AvatarColor = $winner1->avatarColor;
-			$item->w1Gender = $winner1->gender;
-
-			// get winner #2 details
-			$winner2 = Person::find($raffle->winner2);
-			$item->w2Username = $winner2->username;
-			$item->w2Avatar = $winner2->avatar;
-			$item->w2AvatarColor = $winner2->avatarColor;
-			$item->w2Gender = $winner2->gender;
-
-			// get winner #3 details
-			$winner3 = Person::find($raffle->winner3);
-			$item->w3Username = $winner3->username;
-			$item->w3Avatar = $winner3->avatar;
-			$item->w3AvatarColor = $winner3->avatarColor;
-			$item->w3Gender = $winner3->gender;
-
-			// add to the content
-			$winners[] = $item;
-		}
-
-		// calculate minutes till the end of raffle
-		$monthEnd = strtotime(date('Y-m-t 23:59:59'));
-		$minsUntilMonthEnd = ceil(($monthEnd - time()) / 60);
+		// get last 20 winners
+		$ganadores = Database::query("
+			SELECT A.raffle, A.person_tickets, B.gender, B.username, B.avatar, B.avatarColor
+			FROM _rifa_winners A JOIN person B
+			ON A.person_id = B.id
+			ORDER BY A.raffle DESC
+			LIMIT 18");
 
 		// create the final user Response
-		$response->setCache($minsUntilMonthEnd);
-		$response->setTemplate('winners.ejs', ['winners' => $winners]);
+		$response->setCache();
+		$response->setTemplate('ganadores.ejs', ["ganadores" => $ganadores]);
 	}
 
 	/**
-	 * Pay for an item and add the items to the database
+	 * Read the rules
 	 *
-	 * @param Request
-	 * @param Response
-	 *
-	 * @return Response
-	 * @throws Exception
+	 * @author salvipascual
+	 * @param Request $request
+	 * @param Response $response
 	 */
-	public function _pay(Request $request, Response $response)
+	public function _reglas(Request $request, Response $response)
 	{
-		// get the amulet to purchase
-		$code = $request->input->data->code;
-		$isError = false;
+		$response->setCache('year');
+		$response->setTemplate('reglas.ejs');
+	}
 
-		// check the code exists
-		$codes = ['1TICKET' => 1, '5TICKETS' => 5, '10TICKETS' => 10];
-		if (!isset($codes[$code])) {
-			$isError = true;
-		}
+	/**
+	 * Purchase tickets
+	 *
+	 * @author salvipascual
+	 * @param Request $request
+	 * @param Response $response
+	 */
+	public function _comprar(Request $request, Response $response)
+	{
+		// get amounts of tickets to purchase
+		$tickets = (int) $request->input->data->tickets;
+
+		// create the message
+		$message = "$tickets tickets para la rifa del " . strftime("%e %B");
 
 		try {
 			// process the payment
-			Money::purchase($request->person->id, $code);
-
-			// complete the challenge
-			Challenges::complete('buy-raffle-tickets', $request->person->id);
-
-			// complete tutorial
-			Tutorial::complete($request->person->id, 'raffle_ticket');
+			Money::send($request->person->id, Money::BANK, $tickets, $message);
 		} catch (Exception $e) {
-			// error si no hay sificiente credito
-			if ($e->getCode() === 532) {
-				$response->setTemplate('message.ejs', [
-					'header' => 'No tienes suficiente crédito',
-					'icon' => 'sentiment_very_dissatisfied',
-					'text' => 'Tu crédito es insuficiente para comprar tickets',
-					'button' => ['href' => 'CREDITO', 'caption' => 'Revisa tu crédito']
-				]);
-				return;
-			}
-
-			// otros errores
-			$response->setTemplate('message.ejs', [
+			return $response->setTemplate('message.ejs', [
 				'header' => 'Error inesperado',
 				'icon' => 'sentiment_very_dissatisfied',
-				'text' => 'Hemos encontrado un error procesando su canje. Por favor intente nuevamente, si el problema persiste, escríbanos al soporte.',
-				'button' => ['href' => 'RIFA TICKETS', 'caption' => 'Reintentar']
+				'text' => 'Hemos encontrado un error canjeando sus tickets. Por favor intente nuevamente, si el problema persiste, escríbanos al soporte.',
+				'button' => ['href' => 'RIFA', 'caption' => 'Regresar']
 			]);
-
-			// post message for the developers
-			$alert = new Alert($e->getCode(), 'RIFA: ' . $e->getMessage());
-			return $alert->post();
 		}
 
-		// create SQL to add the tickets
-		$vals = [];
-		for ($i = 0; $i < $codes[$code]; $i++) {
-			$vals[] = "('PURCHASE','{$request->person->id}')";
-		}
-		$sql = implode(',', $vals);
+		// notify the buyer
+		Notifications::alert($request->person->id, "Canjeó $message", 'local_play', '{"command":"RIFA"}');
 
-		// add tickets to the database
-		Database::query("INSERT INTO ticket (origin,person_id) VALUES $sql;");
+		// complete the challenge
+		Challenges::complete('buy-raffle-tickets', $request->person->id);
+
+		// complete tutorial
+		Tutorial::complete($request->person->id, 'raffle_ticket');
 
 		// add the experience
 		Level::setExperience('RAFFLE_BUY_FIRST_TICKET', $request->person->id);
 
+		// add tickets to the database
+		Database::query("
+			INSERT INTO _rifa_tickets (raffle, person_id, tickets) 
+			VALUES ('{$this->currentRaffle}', {$request->person->id}, $tickets)
+			ON DUPLICATE KEY UPDATE tickets = tickets + $tickets");
+
 		// possitive response (with seed to avoid cache)
 		$seed = date('Hms') . rand(100, 999);
-
 		return $response->setTemplate('message.ejs', [
-			"header" => "Canje realizado",
+			"header" => "¡Tickets adquiridos!",
 			"icon" => "sentiment_very_satisfied",
-			"text" => "Su canje se ha realizado satisfactoriamente. Usted ha recibido {$codes[$code]} ticket(s) para la rifa en curso. ¡Buena suerte!",
+			"text" => "Su canje se ha realizado satisfactoriamente y usted ha obtenido $message. ¡Buena suerte!",
 			"button" => ["href" => "RIFA $seed", "caption" => "Ver rifa"]
 		]);
 	}

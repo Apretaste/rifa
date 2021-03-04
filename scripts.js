@@ -1,61 +1,48 @@
-var currentCode = false;
-var share;
-
 $(document).ready(function () {
 	$('.tabs').tabs();
 	$('.modal').modal();
 });
 
-// show the modal popup
-function openModal(code) {
-	currentCode = code;
-	$('#modal').modal('open');
+// open the buy modal
+function openTicketsModal() {
+	$('#ticketsModal').modal('open');
+	$('#tickets').focus().val('');
 }
 
 // execute the transfer
 function buy() {
+	// get tickets
+	var tickets = Number.parseFloat($('#tickets').val());
+	var credit = Number.parseFloat($('#credit').val());
+
+	// check if valid number of tickets
+	if(isNaN(tickets) || tickets <= 0 || tickets % 1 !== 0) {
+		M.toast({html: 'El valor no parece ser correcto'});
+		$('#tickets').focus();
+		return false;
+	}
+
+	// check if you have enough credit
+	if(tickets > credit) {
+		M.toast({html: 'No tiene suficientes créditos'});
+		$('#tickets').focus();
+		return false;
+	}
+
+	// block click to avoid double send
+	$('#buy').attr('onclick', '');
+	$('#tickets').prop('disabled', true);
+
+	// enviar a comprar los tickets
 	apretaste.send({
-		command: "RIFA PAY",
-		data: {'code': currentCode},
+		command: "RIFA COMPRAR",
+		data: {'tickets': tickets},
 		redirect: true
 	});
 }
 
-// create a teaser text for the popup
-function teaser(text) {
-	return text.length <= 50 ? text : text.substr(0, 50) + "...";
-}
-
-// inits a share popup
-function init(raffle) {
-	share = {
-		text: teaser('RIFA ' + moment(raffle.start_date).format('MMMM D, Y') + ': ' + raffle.item_desc),
-		icon: 'ticket-alt',
-		send: function () {
-			apretaste.send({
-				command: 'PIZARRA PUBLICAR',
-				redirect: false,
-				callback: {
-					name: 'toast',
-					data: 'La rifa fue compartida en Pizarra'
-				},
-				data: {
-					text: $('#message').val(),
-					image: '',
-					link: {
-						command: btoa(JSON.stringify({
-							command: 'RIFA',
-							data: {id: raffle.raffle_id}
-						})),
-						icon: share.icon,
-						text: share.text
-					}
-				}
-			})
-		}
-	};
-}
-
-function toast(message){
-	M.toast({html: message});
+// shorten a name to fit in the box
+function short(username) {
+	if (username.length > 9) return username.substring(0, 6) + '...';
+	return username;
 }

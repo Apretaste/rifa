@@ -1,0 +1,71 @@
+<div class="row">
+	<div class="col s12">
+		<ul class="tabs tabs-fixed-width">
+			<li class="tab"><a href="#" class="active">Rifa</a></li>
+			<li class="tab"><a href="#" onclick="apretaste.send({command: 'RIFA GANADORES'})">Ganadores</a></li>
+			<li class="tab"><a href="#" onclick="apretaste.send({command: 'RIFA REGLAS'})"><i class="fas fa-question-circle"></i></a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- RAFFLE -->
+
+<div class="row">
+	<div class="col s12">
+		<img class="fullscreen z-depth-1 delete-if-no-image" src="{{APP_SERVICE_PATH}}/images/premio.png" alt="$3 en saldo o Bitcoin">
+
+		<span class="chip clear">
+			<i class="far fa-calendar"></i> 
+			Cierra <%= moment().format('YYYY-MM-DD') == raffle ? 'hoy' : 'mañana' %>
+			<%= moment(raffle).hour(19).format('D [de] MMMM [a las] h a') %>
+		</span>
+
+		<p>Cada día rifamos $3 USD, que se le entregarán al ganador como saldo móbil o en Bitcoin. Cada ticket aumenta tus chances de ganar. El ganador del día se anunciará a la sección "Ganadores".</p>
+
+		<span class="chip"><i class="fas fa-ticket-alt"></i> <%= playing %> tickets en juego</span>
+		<span class="chip"><i class="fas fa-award"></i> <%= Number.parseFloat(chances).toFixed(2) %>% de ganar</span>
+	</div>
+</div>
+
+<!-- TICKETS -->
+
+<div class="row">
+	<div class="col s12">
+		<ul class="collection tickets">
+			<li class="collection-item avatar">
+				<% if(tickets > 0) { %>
+					<i class="fas fa-thumbs-up green circle"></i>
+					<span class="title green-text">Estás jugando <%= tickets %> tickets</span>
+					<p>Obtén más tickets y aumenta tus chances de ganar</p>
+				<% } else { %>
+					<i class="fas fa-thumbs-down red circle"></i>
+					<span class="title red-text">No estás jugando</span>
+					<p>Compra tickets antes de la hora de cierre y participa en esta rifa</p>
+				<% } %>
+				<a href="#" onclick="openTicketsModal()" class="secondary-content green-text"><i class="fas fa-ticket-alt"></i></a>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<!-- MODALS -->
+
+<div id="ticketsModal" class="modal">
+	<div class="modal-content">
+		<div class="center-align brown-text text-darken-4">
+			<p><b>¡Tickets para la rifa de <%= moment().format('YYYY-MM-DD') == raffle ? 'hoy' : 'mañana' %>!</b></p>
+			<img class="fullscreen delete-if-no-image" src="{{APP_SERVICE_PATH}}/images/ticket.png" alt="Compre tickets a §1">
+			<p><b>Cada ticket vale §1 y usted tiene §<%= Number.parseFloat(credit).toFixed(2) %>. ¿Cuántos tickets quiere?</b></p>
+		</div>
+
+		<div class="input-field col s12">
+			<i class="fas fa-ticket-alt prefix"></i>
+			<input id="tickets" type="number" value="">
+			<input id="credit" type="hidden" value="<%= credit %>">
+		</div>
+	</div>
+	<div class="modal-footer">
+		<a href="#!" class="modal-close waves-effect waves-light btn-flat">Cancelar</a>
+		<a id="buy" onclick="buy()" class="waves-effect waves-green btn-flat green-text">Canjear</a>
+	</div>
+</div>
