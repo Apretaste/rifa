@@ -12,7 +12,8 @@
 	<div class="col s12">
 		<ul class="collection one-line">
 			<% ganadores.forEach(function(item) { %>
-				<li class="collection-item avatar">
+				<% var today = (moment().format('YYYY-MM-DD') == item.raffle) ? 'today' : '' %>
+				<li class="collection-item avatar <%= today %>">
 					<div class="person-avatar circle" face="<%= item.avatar %>" color="<%= item.avatarColor %>" size="40"></div>
 					<p><a href="#!" class="black-text <%= item.gender %>" onclick="apretaste.send({command:'PERFIL', data:{username:'<%= item.username %>'}})">@<%= item.username %></a></p>
 					<span class="chip clear tiny spacing"><i class="far fa-calendar"></i> <%= moment(item.raffle).format("DD/MM/YYYY") %></span>
