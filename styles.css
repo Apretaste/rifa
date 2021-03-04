@@ -1,6 +1,6 @@
 /* GLOBAL */
 
-.fullscreen {
+.full-width {
 	width: 100%;
 }
 
@@ -87,4 +87,10 @@
 	top: 15px  !important;
 	left: 10px !important;
 	font-style: normal;
+}
+
+/* MODAL */
+
+.modal.fullscreen {
+	max-height: 100% !important;
 }

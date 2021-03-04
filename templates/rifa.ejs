@@ -12,7 +12,7 @@
 
 <div class="row">
 	<div class="col s12">
-		<img class="fullscreen z-depth-1 delete-if-no-image" src="{{APP_SERVICE_PATH}}/images/premio.png" alt="$3 en saldo o Bitcoin">
+		<img class="full-width z-depth-1 delete-if-no-image" src="{{APP_SERVICE_PATH}}/images/premio.png" alt="$3 en saldo o Bitcoin">
 
 		<span class="chip clear">
 			<i class="far fa-calendar"></i> 
@@ -50,11 +50,11 @@
 
 <!-- MODALS -->
 
-<div id="ticketsModal" class="modal">
+<div id="ticketsModal" class="modal bottom-sheet fullscreen">
 	<div class="modal-content">
 		<div class="center-align brown-text text-darken-4">
 			<p><b>¡Tickets para la rifa de <%= moment().format('YYYY-MM-DD') == raffle ? 'hoy' : 'mañana' %>!</b></p>
-			<img class="fullscreen delete-if-no-image" src="{{APP_SERVICE_PATH}}/images/ticket.png" alt="Compre tickets a §1">
+			<img class="full-width delete-if-no-image" src="{{APP_SERVICE_PATH}}/images/ticket.png" alt="Compre tickets a §1">
 			<p><b>Cada ticket vale §1 y usted tiene §<%= Number.parseFloat(credit).toFixed(2) %>. ¿Cuántos tickets quiere?</b></p>
 		</div>
 
