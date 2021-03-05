@@ -51,9 +51,8 @@
 <div id="ticketsModal" class="modal bottom-sheet fullscreen">
 	<div class="modal-content">
 		<div class="center-align brown-text text-darken-4">
-			<p><b>¡Tickets para la rifa de <%= moment().format('YYYY-MM-DD') == raffle ? 'hoy' : 'mañana' %>!</b></p>
 			<img class="delete-if-no-image" src="{{APP_SERVICE_PATH}}/images/ticket.png" alt="Compre tickets a §1">
-			<p><b>Cada ticket vale §1 y usted tiene §<%= Number.parseFloat(credit).toFixed(2) %>. ¿Cuántos tickets quiere?</b></p>
+			<p><b>¡Tickets para la rifa de <%= moment().format('YYYY-MM-DD') == raffle ? 'hoy' : 'mañana' %>! Cada ticket vale §1 y usted tiene §<%= Number.parseFloat(credit).toFixed(2) %>. ¿Cuántos quiere?</b></p>
 		</div>
 
 		<div class="input-field col s12">
