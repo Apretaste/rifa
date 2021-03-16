@@ -102,7 +102,8 @@ class Service
 		$tickets = (int) $request->input->data->tickets;
 
 		// create the message
-		$message = "$tickets tickets para la rifa del " . strftime("%e %B");
+		$raffleDay = (date('H') < 19) ? "hoy" : "mañana";
+		$message = "$tickets tickets para la rifa de $raffleDay " . strftime("%e %B", strtotime($this->currentRaffle));
 
 		try {
 			// process the payment
