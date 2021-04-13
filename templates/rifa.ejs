@@ -12,13 +12,13 @@
 
 <div class="row">
 	<div class="col s12">
-		<img class="full-width z-depth-1 delete-if-no-image" src="{{APP_SERVICE_PATH}}/images/premio.png" alt="$3 en saldo o Bitcoin">
+		<img class="full-width z-depth-1 delete-if-no-image" src="{{APP_SERVICE_PATH}}/images/premio.png" alt="$3 en saldo">
 
 		<span class="chip clear">
 			<i class="far fa-calendar"></i> Cierra <%= moment().format('YYYY-MM-DD') == raffle ? 'hoy' : 'mañana' %> <%= moment(raffle).hour(19).format('D [de] MMMM [a las] h a') %>
 		</span>
 
-		<p>Cada día rifamos $3 USD, que se le entregarán al ganador como saldo móvil o en Bitcoin. Cada ticket aumenta tus chances de ganar. El ganador del día se anunciará a la sección "Ganadores".</p>
+		<p>Cada día rifamos $3 USD, que se le entregarán al ganador como saldo móvil. Cada ticket aumenta tus chances de ganar. El ganador del día se anunciará a la sección "Ganadores".</p>
 
 		<span class="chip"><i class="fas fa-ticket-alt"></i> <%= playing %> tickets en juego</span>
 		<span class="chip"><i class="fas fa-award"></i> <%= Number.parseFloat(chances).toFixed(2) %>% de ganar</span>
